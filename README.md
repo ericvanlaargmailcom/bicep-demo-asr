@@ -9,7 +9,7 @@ De insteek is bewust compact: geen enterprise landing zone met tientallen lagen,
 Met deze demo kun je laten zien hoe een financiële organisatie security-by-default en herhaalbaarheid kan combineren:
 
 - Eén `main.bicep` op subscription scope maakt de resource group en orkestreert de modules.
-- Herbruikbare modules leveren netwerk, storage, Key Vault, monitoring en optionele RBAC.
+- Herbruikbare modules leveren netwerk, storage, Web App runtime, monitoring en optionele RBAC.
 - Alle resources worden uitgerold in West Europe.
 - Governance is zichtbaar via verplichte tags voor applicatie, omgeving, eigenaar, cost center, beheerwijze en klant.
 - Publieke toegang staat uit voor dataresources; toegang loopt via private endpoints en private DNS.
@@ -26,6 +26,14 @@ De demo rolt per omgeving een applicatie-resource-group uit:
   - `subnet-private-endpoints` voor private endpoints
 - Log Analytics Workspace met 30 dagen retention
 - Workspace-based Application Insights
+- Web App met:
+  - Linux App Service Plan
+  - system-assigned managed identity
+  - HTTPS only
+  - minimum TLS 1.2
+  - FTPS uitgeschakeld
+  - Application Insights configuratie
+  - diagnostic settings naar Log Analytics
 - Storage account met:
   - publieke netwerktoegang uit
   - blob public access uit
@@ -34,14 +42,6 @@ De demo rolt per omgeving een applicatie-resource-group uit:
   - Azure Files file service
   - private endpoint voor `file`
   - private DNS zone `privatelink.file.core.windows.net`
-  - diagnostic settings naar Log Analytics
-- Key Vault met:
-  - RBAC authorization
-  - soft delete met 7 dagen retention
-  - purge protection uitgeschakeld voor demo-cleanup
-  - publieke netwerktoegang uit
-  - private endpoint
-  - private DNS zone `privatelink.vaultcore.azure.net`
   - diagnostic settings naar Log Analytics
 - Optionele voorbeeld-role-assignment op resource group scope.
 
@@ -61,8 +61,8 @@ bicep-demo-asr/
    │  └─ vnet.bicep
    ├─ storage/
    │  └─ storageAccount.bicep
-   ├─ keyvault/
-   │  └─ keyVault.bicep
+   ├─ webapp/
+   │  └─ webApp.bicep
    ├─ monitoring/
    │  └─ logAnalytics.bicep
    └─ security/
@@ -74,7 +74,7 @@ bicep-demo-asr/
 De hoofdtemplate gebruikt deze parameters:
 
 - `environment`: `dev`, `test` of `prod`
-- `applicationName`: korte applicatienaam, maximaal 5 tekens in deze demo vanwege de Key Vault naamlimiet
+- `applicationName`: korte applicatienaam, maximaal 5 tekens voor compacte en consistente resource names
 - `location`: vastgezet op `westeurope`
 - `owner`: eigenaar voor governance
 - `costCenter`: kostenplaats voor chargeback/showback
@@ -142,14 +142,14 @@ Open daarna de modules:
 - `modules/network/vnet.bicep`: standaard netwerkbouwblok met vaste subnets en NSG's.
 - `modules/monitoring/logAnalytics.bicep`: gedeelde observability voor logs, metrics en Application Insights.
 - `modules/storage/storageAccount.bicep`: secure-by-default dataopslag met public access uit, OAuth-default en private endpoint.
-- `modules/keyvault/keyVault.bicep`: secrets management met RBAC, soft delete, demo-vriendelijke cleanup en private endpoint.
+- `modules/webapp/webApp.bicep`: gestandaardiseerde applicatieruntime met managed identity, HTTPS only en Application Insights.
 - `modules/security/roleAssignments.bicep`: klein voorbeeld van uitbreidbare governance op resource group scope.
 
 De kernboodschap: teams hoeven niet telkens opnieuw securitykeuzes te maken. Ze consumeren goedgekeurde modules, vullen parameters in en krijgen dezelfde veilige baseline voor dev, test en prod.
 
 ## Cleanup Commands
 
-Verwijder de dev-omgeving en purge de soft-deleted Key Vault automatisch:
+Verwijder de dev-omgeving:
 
 ```bash
 ./scripts/cleanup.sh dev
@@ -162,4 +162,4 @@ Voor test en prod:
 ./scripts/cleanup.sh prod
 ```
 
-Let op: Key Vault soft delete staat verplicht aan bij moderne Key Vaults. In deze demo staat purge protection uit en is de retention 7 dagen. Het cleanup-script purget de deleted vault automatisch, zodat je dezelfde naam direct opnieuw kunt gebruiken. In productie zet je purge protection normaal gesproken wel aan en purge je niet automatisch.
+Omdat deze versie geen Key Vault meer gebruikt, is er geen soft-delete of purge-stap nodig. De cleanup blijft daardoor geschikt voor herhaalde cursusdemo's.

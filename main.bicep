@@ -8,7 +8,7 @@ targetScope = 'subscription'
 ])
 param environment string
 
-@description('Short lowercase application name. Keep this to 5 characters or fewer because Key Vault names have a 24 character limit.')
+@description('Short lowercase application name used for consistent resource naming.')
 @minLength(2)
 @maxLength(5)
 param applicationName string
@@ -39,7 +39,8 @@ var resourceGroupName = 'rg-${suffix}'
 var vnetName = 'vnet-${suffix}'
 var logAnalyticsName = 'log-${suffix}'
 var appInsightsName = 'appi-${suffix}'
-var keyVaultName = 'kv-${suffix}'
+var appServicePlanName = 'asp-${suffix}'
+var webAppName = 'app-${suffix}'
 var storageAccountName = 'st${normalizedApplicationName}${environment}${locationShort}001'
 
 var tags = {
@@ -91,14 +92,14 @@ module storage 'modules/storage/storageAccount.bicep' = {
   }
 }
 
-module keyVault 'modules/keyvault/keyVault.bicep' = {
-  name: 'keyvault-${environment}'
+module webApp 'modules/webapp/webApp.bicep' = {
+  name: 'webapp-${environment}'
   scope: appResourceGroup
   params: {
     location: location
-    keyVaultName: keyVaultName
-    privateEndpointSubnetId: network.outputs.privateEndpointSubnetId
-    vnetId: network.outputs.vnetId
+    appServicePlanName: appServicePlanName
+    webAppName: webAppName
+    applicationInsightsConnectionString: monitoring.outputs.applicationInsightsConnectionString
     logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
     tags: tags
   }
@@ -117,6 +118,7 @@ module security 'modules/security/roleAssignments.bicep' = if (!empty(principalI
 output resourceGroupName string = appResourceGroup.name
 output vnetName string = network.outputs.vnetName
 output storageAccountName string = storage.outputs.storageAccountName
-output keyVaultName string = keyVault.outputs.keyVaultName
+output webAppName string = webApp.outputs.webAppName
+output webAppDefaultHostName string = webApp.outputs.webAppDefaultHostName
 output logAnalyticsWorkspaceId string = monitoring.outputs.logAnalyticsWorkspaceId
 output applicationInsightsName string = monitoring.outputs.applicationInsightsName
