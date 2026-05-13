@@ -37,8 +37,8 @@ De demo rolt per omgeving een applicatie-resource-group uit:
   - diagnostic settings naar Log Analytics
 - Key Vault met:
   - RBAC authorization
-  - purge protection
-  - soft delete
+  - soft delete met 7 dagen retention
+  - purge protection uitgeschakeld voor demo-cleanup
   - publieke netwerktoegang uit
   - private endpoint
   - private DNS zone `privatelink.vaultcore.azure.net`
@@ -140,7 +140,7 @@ Open daarna de modules:
 - `modules/network/vnet.bicep`: standaard netwerkbouwblok met vaste subnets en NSG's.
 - `modules/monitoring/logAnalytics.bicep`: gedeelde observability voor logs, metrics en Application Insights.
 - `modules/storage/storageAccount.bicep`: secure-by-default dataopslag met public access uit, OAuth-default en private endpoint.
-- `modules/keyvault/keyVault.bicep`: secrets management met RBAC, purge protection en private endpoint.
+- `modules/keyvault/keyVault.bicep`: secrets management met RBAC, soft delete, demo-vriendelijke cleanup en private endpoint.
 - `modules/security/roleAssignments.bicep`: klein voorbeeld van uitbreidbare governance op resource group scope.
 
 De kernboodschap: teams hoeven niet telkens opnieuw securitykeuzes te maken. Ze consumeren goedgekeurde modules, vullen parameters in en krijgen dezelfde veilige baseline voor dev, test en prod.
@@ -155,4 +155,4 @@ az group delete --name rg-asr-claim-test-we-001 --yes --no-wait
 az group delete --name rg-asr-claim-prod-we-001 --yes --no-wait
 ```
 
-Let op: Key Vault purge protection staat aan. Dat is bewust voor een security-by-default demo. In echte omgevingen beschermt dit tegen onbedoeld of kwaadwillend permanent verwijderen.
+Let op: Key Vault soft delete staat verplicht aan bij moderne Key Vaults. In deze demo staat purge protection uit en is de retention 7 dagen, zodat je na cleanup eventueel handmatig kunt purgen en dezelfde naam sneller opnieuw kunt gebruiken. In productie zet je purge protection normaal gesproken wel aan.
