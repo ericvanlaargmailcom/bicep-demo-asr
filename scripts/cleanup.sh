@@ -47,10 +47,33 @@ fi
 
 if [[ "${deleted_vault_count}" == "1" ]]; then
   echo "Purging deleted Key Vault: ${key_vault_name}"
-  subscription_id="$(az account show --query id -o tsv)"
-  az rest \
-    --method post \
-    --url "https://management.azure.com/subscriptions/${subscription_id}/providers/Microsoft.KeyVault/locations/${location}/deletedVaults/${key_vault_name}/purge?api-version=2023-07-01"
+  az keyvault purge \
+    --name "${key_vault_name}" \
+    --location "${location}" \
+    --no-wait \
+    --only-show-errors
+
+  for attempt in {1..30}; do
+    deleted_vault_count="$(
+      az keyvault list-deleted \
+        --query "[?name=='${key_vault_name}'] | length(@)" \
+        -o tsv
+    )"
+
+    if [[ "${deleted_vault_count}" == "0" ]]; then
+      echo "Deleted Key Vault has been purged: ${key_vault_name}"
+      break
+    fi
+
+    echo "Waiting for Key Vault purge to complete... attempt ${attempt}/30"
+    sleep 10
+  done
+
+  if [[ "${deleted_vault_count}" != "0" ]]; then
+    echo "Purge was requested, but ${key_vault_name} is still visible in deleted vaults."
+    echo "Check Azure operation status or retry cleanup later."
+    exit 1
+  fi
 else
   echo "No deleted Key Vault found for ${key_vault_name}; nothing to purge."
 fi
