@@ -27,11 +27,13 @@ De demo rolt per omgeving een applicatie-resource-group uit:
 - Log Analytics Workspace met 30 dagen retention
 - Workspace-based Application Insights
 - Web App met:
-  - Linux App Service Plan
+  - Linux App Service Plan op Premium V3, geschikt voor maximaal 20 deployment slots
+  - PHP runtime
   - system-assigned managed identity
   - HTTPS only
   - minimum TLS 1.2
   - FTPS uitgeschakeld
+  - `staging` deployment slot voor CI/CD-demo's
   - Application Insights configuratie
   - diagnostic settings naar Log Analytics
 - Storage account met:
@@ -142,10 +144,12 @@ Open daarna de modules:
 - `modules/network/vnet.bicep`: standaard netwerkbouwblok met vaste subnets en NSG's.
 - `modules/monitoring/logAnalytics.bicep`: gedeelde observability voor logs, metrics en Application Insights.
 - `modules/storage/storageAccount.bicep`: secure-by-default dataopslag met public access uit, OAuth-default en private endpoint.
-- `modules/webapp/webApp.bicep`: gestandaardiseerde applicatieruntime met managed identity, HTTPS only en Application Insights.
+- `modules/webapp/webApp.bicep`: gestandaardiseerde PHP applicatieruntime met managed identity, HTTPS only, Application Insights en een `staging` slot voor CI/CD.
 - `modules/security/roleAssignments.bicep`: klein voorbeeld van uitbreidbare governance op resource group scope.
 
 De kernboodschap: teams hoeven niet telkens opnieuw securitykeuzes te maken. Ze consumeren goedgekeurde modules, vullen parameters in en krijgen dezelfde veilige baseline voor dev, test en prod.
+
+Voor het CI/CD-deel kun je tijdens de training handmatig een GitHub Actions workflow koppelen aan de Web App of aan het `staging` slot. De App Service Plan SKU is bewust `P1v3`, omdat Premium tiers deployment slots ondersteunen en deze demo ruimte laat om tot 20 slots te gebruiken. Voor een goedkopere korte demo kun je de SKU tijdelijk verlagen, maar dan verlies je de 20-slot capaciteit.
 
 ## Cleanup Commands
 

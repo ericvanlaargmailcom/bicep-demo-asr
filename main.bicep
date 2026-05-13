@@ -120,5 +120,7 @@ output vnetName string = network.outputs.vnetName
 output storageAccountName string = storage.outputs.storageAccountName
 output webAppName string = webApp.outputs.webAppName
 output webAppDefaultHostName string = webApp.outputs.webAppDefaultHostName
+output stagingSlotName string = webApp.outputs.stagingSlotName
+output stagingSlotDefaultHostName string = webApp.outputs.stagingSlotDefaultHostName
 output logAnalyticsWorkspaceId string = monitoring.outputs.logAnalyticsWorkspaceId
 output applicationInsightsName string = monitoring.outputs.applicationInsightsName

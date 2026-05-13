@@ -22,9 +22,9 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   location: location
   tags: tags
   sku: {
-    name: 'B1'
-    tier: 'Basic'
-    size: 'B1'
+    name: 'P1v3'
+    tier: 'PremiumV3'
+    size: 'P1v3'
     capacity: 1
   }
   kind: 'linux'
@@ -51,7 +51,7 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
       ftpsState: 'Disabled'
       http20Enabled: true
       minTlsVersion: '1.2'
-      linuxFxVersion: 'DOTNETCORE|8.0'
+      linuxFxVersion: 'PHP|8.3'
       appSettings: [
         {
           name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
@@ -64,6 +64,50 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
         {
           name: 'ASR_DEMO_MANAGED_BY'
           value: 'bicep'
+        }
+      ]
+    }
+  }
+}
+
+resource stagingSlot 'Microsoft.Web/sites/slots@2023-12-01' = {
+  parent: webApp
+  name: 'staging'
+  location: location
+  tags: union(tags, {
+    slot: 'staging'
+  })
+  kind: 'app,linux'
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    serverFarmId: appServicePlan.id
+    httpsOnly: true
+    publicNetworkAccess: 'Enabled'
+    clientAffinityEnabled: false
+    siteConfig: {
+      alwaysOn: true
+      ftpsState: 'Disabled'
+      http20Enabled: true
+      minTlsVersion: '1.2'
+      linuxFxVersion: 'PHP|8.3'
+      appSettings: [
+        {
+          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+          value: applicationInsightsConnectionString
+        }
+        {
+          name: 'ApplicationInsightsAgent_EXTENSION_VERSION'
+          value: '~3'
+        }
+        {
+          name: 'ASR_DEMO_MANAGED_BY'
+          value: 'bicep'
+        }
+        {
+          name: 'ASR_DEMO_SLOT'
+          value: 'staging'
         }
       ]
     }
@@ -102,7 +146,41 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
   }
 }
 
+resource stagingSlotDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: 'diag-${webAppName}-staging'
+  scope: stagingSlot
+  properties: {
+    workspaceId: logAnalyticsWorkspaceId
+    logs: [
+      {
+        category: 'AppServiceHTTPLogs'
+        enabled: true
+      }
+      {
+        category: 'AppServiceConsoleLogs'
+        enabled: true
+      }
+      {
+        category: 'AppServiceAppLogs'
+        enabled: true
+      }
+      {
+        category: 'AppServiceAuditLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+  }
+}
+
 output appServicePlanName string = appServicePlan.name
 output webAppName string = webApp.name
 output webAppDefaultHostName string = webApp.properties.defaultHostName
 output webAppPrincipalId string = webApp.identity.principalId
+output stagingSlotName string = stagingSlot.name
+output stagingSlotDefaultHostName string = stagingSlot.properties.defaultHostName
