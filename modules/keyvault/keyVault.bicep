@@ -32,8 +32,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     // Soft delete is mandatory for modern Key Vaults. Use the shortest retention for repeatable demos.
     enableSoftDelete: true
     softDeleteRetentionInDays: 7
-    // Disabled for demo cleanup. Enable this in production to prevent permanent deletion during retention.
-    enablePurgeProtection: false
+    // Purge protection is intentionally omitted for demo cleanup.
+    // In production, set enablePurgeProtection to true to prevent permanent deletion during retention.
     publicNetworkAccess: 'Disabled'
     networkAcls: {
       bypass: 'AzureServices'
