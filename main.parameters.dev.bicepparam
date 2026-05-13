@@ -1,7 +1,7 @@
 using './main.bicep'
 
 param environment = 'dev'
-param applicationName = 'claim'
+param applicationName = 'asrdm'
 param location = 'westeurope'
 param owner = 'cloud-platform-team@asr.example'
 param costCenter = 'ASR-DEMO-DEV'

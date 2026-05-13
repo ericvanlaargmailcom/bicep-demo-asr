@@ -150,9 +150,9 @@ De kernboodschap: teams hoeven niet telkens opnieuw securitykeuzes te maken. Ze 
 Verwijder de demo-resource-groups per omgeving:
 
 ```bash
-az group delete --name rg-asr-claim-dev-we-001 --yes --no-wait
-az group delete --name rg-asr-claim-test-we-001 --yes --no-wait
-az group delete --name rg-asr-claim-prod-we-001 --yes --no-wait
+az group delete --name rg-asr-asrdm-dev-we-001 --yes --no-wait
+az group delete --name rg-asr-asrdm-test-we-001 --yes --no-wait
+az group delete --name rg-asr-asrdm-prod-we-001 --yes --no-wait
 ```
 
 Let op: Key Vault soft delete staat verplicht aan bij moderne Key Vaults. In deze demo staat purge protection uit en is de retention 7 dagen, zodat je na cleanup eventueel handmatig kunt purgen en dezelfde naam sneller opnieuw kunt gebruiken. In productie zet je purge protection normaal gesproken wel aan.
