@@ -51,9 +51,9 @@ De demo rolt per omgeving een applicatie-resource-group uit:
 bicep-demo-asr/
 ├─ README.md
 ├─ main.bicep
-├─ main.parameters.dev.json
-├─ main.parameters.test.json
-├─ main.parameters.prod.json
+├─ main.parameters.dev.bicepparam
+├─ main.parameters.test.bicepparam
+├─ main.parameters.prod.bicepparam
 └─ modules/
    ├─ network/
    │  └─ vnet.bicep
@@ -79,7 +79,7 @@ De hoofdtemplate gebruikt deze parameters:
 - `principalId`: optioneel object ID voor de voorbeeld-role-assignment
 - `roleDefinitionId`: optioneel aanpasbare role definition, standaard `Reader`
 
-De parameterbestanden gebruiken dummywaarden. Vul `principalId` alleen met een echte Entra ID object ID als je de RBAC-module tijdens de demo wilt activeren.
+De parameterbestanden gebruiken het Bicep-native `.bicepparam` formaat met dummywaarden. Vul `principalId` alleen met een echte Entra ID object ID als je de RBAC-module tijdens de demo wilt activeren.
 
 ## Deployment Commands
 
@@ -102,7 +102,7 @@ Deploy de dev-omgeving:
 az deployment sub create \
   --location westeurope \
   --template-file main.bicep \
-  --parameters @main.parameters.dev.json
+  --parameters main.parameters.dev.bicepparam
 ```
 
 Deploy test of prod door het parameterbestand te wisselen:
@@ -111,14 +111,14 @@ Deploy test of prod door het parameterbestand te wisselen:
 az deployment sub create \
   --location westeurope \
   --template-file main.bicep \
-  --parameters @main.parameters.test.json
+  --parameters main.parameters.test.bicepparam
 ```
 
 ```bash
 az deployment sub create \
   --location westeurope \
   --template-file main.bicep \
-  --parameters @main.parameters.prod.json
+  --parameters main.parameters.prod.bicepparam
 ```
 
 Voor een demo met RBAC kun je tijdelijk een principal meegeven:
@@ -127,7 +127,7 @@ Voor een demo met RBAC kun je tijdelijk een principal meegeven:
 az deployment sub create \
   --location westeurope \
   --template-file main.bicep \
-  --parameters @main.parameters.dev.json \
+  --parameters main.parameters.dev.bicepparam \
   --parameters principalId="<entra-object-id>"
 ```
 

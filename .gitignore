@@ -1,2 +1,3 @@
 *.jsonc
 main.json
+main.parameters.*.json
