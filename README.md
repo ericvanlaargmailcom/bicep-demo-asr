@@ -84,6 +84,7 @@ De hoofdtemplate gebruikt deze parameters:
 - `costCenter`: kostenplaats voor chargeback/showback
 - `principalId`: optioneel object-ID van een Entra ID-groep voor de voorbeeld-role-assignment
 - `roleDefinitionId`: optioneel aanpasbare role definition, standaard `Reader`
+- `deployStagingSlot`: bepaalt of het staging slot wordt uitgerold, standaard `true`
 
 De parameterbestanden gebruiken het Bicep-native `.bicepparam` formaat met dummywaarden. Hoewel Azure de technische parameternaam `principalId` gebruikt, verwacht deze demo specifiek het object-ID van een **Entra ID-groep** en niet van een service principal, gebruiker of managed identity.
 

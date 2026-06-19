@@ -31,6 +31,9 @@ param principalId string = ''
 @description('Role definition ID for the optional sample role assignment. Defaults to Reader.')
 param roleDefinitionId string = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 
+@description('Deploy the staging slot. Set to false in the Deployment Stacks lab to demonstrate managed resource deletion.')
+param deployStagingSlot bool = true
+
 var locationShort = 'we'
 var normalizedApplicationName = toLower(applicationName)
 var suffix = 'asr-${normalizedApplicationName}-${environment}-${locationShort}-001'
@@ -101,6 +104,7 @@ module webApp 'modules/webapp/webApp.bicep' = {
     webAppName: webAppName
     applicationInsightsConnectionString: monitoring.outputs.applicationInsightsConnectionString
     logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
+    deployStagingSlot: deployStagingSlot
     tags: tags
   }
 }

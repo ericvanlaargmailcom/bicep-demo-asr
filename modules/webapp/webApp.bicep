@@ -14,6 +14,9 @@ param applicationInsightsConnectionString string
 @description('Log Analytics Workspace resource ID for diagnostic settings.')
 param logAnalyticsWorkspaceId string
 
+@description('Deploy the staging slot and its diagnostic settings.')
+param deployStagingSlot bool = true
+
 @description('Standard governance tags.')
 param tags object
 
@@ -70,7 +73,7 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
   }
 }
 
-resource stagingSlot 'Microsoft.Web/sites/slots@2023-12-01' = {
+resource stagingSlot 'Microsoft.Web/sites/slots@2023-12-01' = if (deployStagingSlot) {
   parent: webApp
   name: 'staging'
   location: location
@@ -146,7 +149,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
   }
 }
 
-resource stagingSlotDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+resource stagingSlotDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (deployStagingSlot) {
   name: 'diag-${webAppName}-staging'
   scope: stagingSlot
   properties: {
@@ -182,5 +185,5 @@ output appServicePlanName string = appServicePlan.name
 output webAppName string = webApp.name
 output webAppDefaultHostName string = webApp.properties.defaultHostName
 output webAppPrincipalId string = webApp.identity.principalId
-output stagingSlotName string = stagingSlot.name
-output stagingSlotDefaultHostName string = stagingSlot.properties.defaultHostName
+output stagingSlotName string = stagingSlot.?name ?? ''
+output stagingSlotDefaultHostName string = stagingSlot.?properties.?defaultHostName ?? ''

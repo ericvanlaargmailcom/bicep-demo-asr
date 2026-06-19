@@ -7,10 +7,11 @@ In dit optionele lab deploy je de dev-omgeving als een Azure Deployment Stack. J
 - wat een Deployment Stack toevoegt aan een gewone Bicep-deployment;
 - hoe Azure bijhoudt welke resources door de stack worden beheerd;
 - wat `detachAll`, `deleteResources` en `deleteAll` betekenen;
+- hoe een stack een resource verwijdert die niet langer in de gewenste configuratie staat;
 - hoe je een volledige omgeving gecontroleerd via de stack opruimt;
 - waarom een Deployment Stack niet hetzelfde is als een Terraform-statefile.
 
-Reken op ongeveer 30 tot 45 minuten.
+Reken op ongeveer 45 tot 60 minuten.
 
 ## Deployment Stack Versus Terraform-State
 
@@ -152,11 +153,95 @@ Dit lab gebruikt `deleteAll`, omdat `main.bicep` zelf de resourcegroep aanmaakt 
 
 Deployment Stacks ondersteunen ook `denyDelete` en `denyWriteAndDelete`. Daarmee kun je handmatige wijzigingen blokkeren. Deze opties vallen buiten dit lab, omdat ze extra aandacht vereisen voor uitzonderingen en hersteltoegang.
 
-## 7. Verwijder De Volledige Omgeving Via De Stack
+## 7. Aha-Moment: Laat De Stack Een Resource Verwijderen
+
+Bij een gewone incrementele Bicep-deployment blijft een bestaande resource meestal staan wanneer die niet langer in de template voorkomt. Een Deployment Stack kan zo'n resource wel verwijderen, omdat de stack weet dat de resource eerder door hem werd beheerd.
+
+In deze oefening zet je het staging slot via de parameter `deployStagingSlot` uit. Daardoor komt het slot niet meer voor in de gewenste configuratie van de stack.
+
+Stel eerst de namen van de resources in en controleer dat het slot bestaat:
+
+```bash
+RESOURCE_GROUP_NAME="rg-asr-asrdm-dev-we-001"
+WEB_APP_NAME="app-asr-asrdm-dev-we-001"
+
+az webapp deployment slot list \
+  --resource-group "$RESOURCE_GROUP_NAME" \
+  --name "$WEB_APP_NAME" \
+  --query "[].{slot:name,state:state}" \
+  --output table
+```
+
+Werk daarna dezelfde stack bij, maar zet `deployStagingSlot` op `false`:
+
+```bash
+az stack sub create \
+  --name "$STACK_NAME" \
+  --location westeurope \
+  --template-file main.bicep \
+  --parameters /tmp/main.parameters.dev.json \
+  --parameters deployStagingSlot=false \
+  --action-on-unmanage deleteAll \
+  --deny-settings-mode none \
+  --description "ASR Bicep Deployment Stacks lab" \
+  --yes
+```
+
+Controleer opnieuw de deployment slots:
+
+```bash
+az webapp deployment slot list \
+  --resource-group "$RESOURCE_GROUP_NAME" \
+  --name "$WEB_APP_NAME" \
+  --query "[].{slot:name,state:state}" \
+  --output table
+```
+
+Het slot `staging` is nu verwijderd. Ook de diagnostic settings van het slot worden niet langer beheerd en zijn verwijderd.
+
+Dit is het belangrijkste aha-moment:
+
+> De stack wist dat het staging slot eerder door hem werd beheerd. Zodra het slot niet meer in de gewenste configuratie stond, heeft `deleteAll` het daadwerkelijk uit Azure verwijderd.
+
+Herstel het slot door dezelfde stack opnieuw bij te werken met `deployStagingSlot=true`:
+
+```bash
+az stack sub create \
+  --name "$STACK_NAME" \
+  --location westeurope \
+  --template-file main.bicep \
+  --parameters /tmp/main.parameters.dev.json \
+  --parameters deployStagingSlot=true \
+  --action-on-unmanage deleteAll \
+  --deny-settings-mode none \
+  --description "ASR Bicep Deployment Stacks lab" \
+  --yes
+```
+
+Controleer dat het staging slot opnieuw bestaat:
+
+```bash
+az webapp deployment slot list \
+  --resource-group "$RESOURCE_GROUP_NAME" \
+  --name "$WEB_APP_NAME" \
+  --query "[].{slot:name,state:state}" \
+  --output table
+```
+
+## 8. Aha-Moment: Verwijder De Volledige Omgeving Met Eén Opdracht
 
 > Dit commando verwijdert de Deployment Stack, de dev-resourcegroep en de resources in die resourcegroep.
 
-Verwijder de volledige omgeving:
+Bekijk eventueel nog één keer welke resources door de stack worden beheerd:
+
+```bash
+az stack sub show \
+  --name "$STACK_NAME" \
+  --query "resources[].{resource:id,status:status}" \
+  --output table
+```
+
+Verwijder daarna de volledige omgeving met één opdracht:
 
 ```bash
 az stack sub delete \
@@ -176,12 +261,15 @@ az group exists \
 
 De tweede opdracht hoort `false` terug te geven.
 
+Het tweede aha-moment is dat je niet ieder onderdeel afzonderlijk hoeft te verwijderen. De stack gebruikt zijn lijst met beheerde resources en het ingestelde `deleteAll`-gedrag om de volledige omgeving op te ruimen.
+
 ## Wat Je Uit Dit Lab Meeneemt
 
 - Gewone Bicep-deployments zijn geschikt voor declaratieve creatie, updates en driftherstel met `what-if`.
 - Deployment Stacks voegen beheergrenzen en lifecycle-instellingen toe.
 - Azure kent via de stack de beheerde resource-ID's, maar bewaart geen volledige Terraform-achtige statefile.
 - `action-on-unmanage` bepaalt of Azure resources loskoppelt of verwijdert.
+- Een stack-update kan resources verwijderen die niet langer in de gewenste configuratie staan.
 - `deleteAll` maakt gecontroleerde cleanup van deze volledige cursusomgeving mogelijk.
 
 ## Problemen Oplossen
