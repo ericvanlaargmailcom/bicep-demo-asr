@@ -87,11 +87,11 @@ De parameterbestanden gebruiken het Bicep-native `.bicepparam` formaat met dummy
 
 ## Voorbereiding Op Een Schone Windows-Labpc
 
-Voer de onderstaande stappen uit in **PowerShell**. De labpc heeft hiervoor internettoegang nodig. Open PowerShell bij voorkeur als administrator wanneer de installatie daarom vraagt.
+De labpc heeft voor deze voorbereiding internettoegang nodig. Gebruik **PowerShell** alleen voor de eerste installatie met `winget`. Gebruik daarna **Git Bash** voor alle Bicep-, Git- en Azure CLI-commando's. Git Bash wordt automatisch met Git for Windows geïnstalleerd.
 
-### 1. Installeer Visual Studio Code, Git en Azure CLI
+### 1. Installeer Visual Studio Code, Git en Azure CLI Met PowerShell
 
-Op Windows 10/11 kun je de benodigde onderdelen installeren met Windows Package Manager (`winget`):
+Open PowerShell, bij voorkeur als administrator, en installeer op Windows 10/11 de benodigde onderdelen met Windows Package Manager (`winget`):
 
 ```powershell
 winget install --exact --id Microsoft.VisualStudioCode
@@ -105,28 +105,28 @@ Als `winget` niet beschikbaar is, gebruik dan de officiële installers:
 - [Git voor Windows](https://git-scm.com/download/win)
 - [Azure CLI voor Windows](https://learn.microsoft.com/cli/azure/install-azure-cli-windows)
 
-Sluit na de installatie alle PowerShell- en VS Code-vensters en open ze opnieuw. Hierdoor worden de nieuwe commando's aan het `PATH` toegevoegd.
+Sluit na de installatie PowerShell. Open vervolgens **Git Bash** vanuit het Startmenu. Hierdoor worden de nieuwe commando's via het bijgewerkte `PATH` gevonden.
 
 Controleer daarna de installatie:
 
-```powershell
+```bash
 code --version
 git --version
 az version
 ```
 
-### 2. Installeer Bicep
+### 2. Installeer Bicep Vanuit Git Bash
 
 Installeer de Bicep CLI via Azure CLI:
 
-```powershell
+```bash
 az bicep install
 az bicep version
 ```
 
 Installeer vervolgens de officiële Bicep-extensie voor Visual Studio Code:
 
-```powershell
+```bash
 code --install-extension ms-azuretools.vscode-bicep
 ```
 
@@ -136,8 +136,8 @@ Je kunt dit ook handmatig doen in VS Code via **Extensions** (`Ctrl+Shift+X`), z
 
 Ga naar een lokale werkmap en download de demo vanaf GitHub:
 
-```powershell
-cd $HOME\Documents
+```bash
+cd ~/Documents
 git clone https://github.com/ericvanlaargmailcom/bicep-demo-asr.git
 ```
 
@@ -147,44 +147,44 @@ Hierdoor wordt een nieuwe map met de naam `bicep-demo-asr` aangemaakt. Als GitHu
 
 Ga naar de zojuist gekloonde projectmap en open deze in VS Code:
 
-```powershell
-cd $HOME\Documents\bicep-demo-asr
+```bash
+cd ~/Documents/bicep-demo-asr
 code .
 ```
 
-Open daarna in VS Code een terminal via **Terminal > New Terminal**. Controleer dat het terminalprofiel **PowerShell** is.
+Open daarna in VS Code een terminal via **Terminal > New Terminal** en controleer dat **Git Bash** als terminalprofiel is geselecteerd. Alle volgende deployment- en cleanupcommando's worden in deze terminal uitgevoerd.
 
-## Deployment Commands
+## Deployment Commands Met Azure CLI
 
 ### 1. Meld Je Aan Bij Azure
 
 Log in met het Global Administrator-account van de eigen Virsoft-tenant:
 
-```powershell
+```bash
 az login
 ```
 
 Wanneer het account toegang heeft tot meerdere tenants of wanneer de verkeerde tenant wordt geopend, log dan expliciet in op de juiste tenant:
 
-```powershell
+```bash
 az login --tenant "<tenant-id>"
 ```
 
 Als de browserlogin op de labpc niet werkt, gebruik dan:
 
-```powershell
+```bash
 az login --use-device-code
 ```
 
 Bekijk de beschikbare subscriptions:
 
-```powershell
+```bash
 az account list --output table
 ```
 
 Selecteer de eigen Azure-subscription op naam of ID en controleer de selectie:
 
-```powershell
+```bash
 az account set --subscription "<subscription-id-of-subscription-name>"
 az account show --output table
 ```
@@ -193,42 +193,42 @@ Ga pas verder wanneer `az account show` de juiste tenant en subscription toont. 
 
 Valideer of de Bicep compileert:
 
-```powershell
+```bash
 az bicep build --file main.bicep
 ```
 
 Deploy de dev-omgeving:
 
-```powershell
-az deployment sub create `
-  --location westeurope `
-  --template-file main.bicep `
+```bash
+az deployment sub create \
+  --location westeurope \
+  --template-file main.bicep \
   --parameters main.parameters.dev.bicepparam
 ```
 
 Deploy test of prod door het parameterbestand te wisselen:
 
-```powershell
-az deployment sub create `
-  --location westeurope `
-  --template-file main.bicep `
+```bash
+az deployment sub create \
+  --location westeurope \
+  --template-file main.bicep \
   --parameters main.parameters.test.bicepparam
 ```
 
-```powershell
-az deployment sub create `
-  --location westeurope `
-  --template-file main.bicep `
+```bash
+az deployment sub create \
+  --location westeurope \
+  --template-file main.bicep \
   --parameters main.parameters.prod.bicepparam
 ```
 
 Voor een demo met RBAC kun je tijdelijk een principal meegeven:
 
-```powershell
-az deployment sub create `
-  --location westeurope `
-  --template-file main.bicep `
-  --parameters main.parameters.dev.bicepparam `
+```bash
+az deployment sub create \
+  --location westeurope \
+  --template-file main.bicep \
+  --parameters main.parameters.dev.bicepparam \
   --parameters principalId="<entra-object-id>"
 ```
 
