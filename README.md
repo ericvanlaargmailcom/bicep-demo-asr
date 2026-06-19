@@ -4,6 +4,8 @@ Deze repository bevat een compacte klantdemo voor ASR over herbruikbare Azure Bi
 
 De insteek is bewust compact: geen enterprise landing zone met tientallen lagen, maar een realistische mini-landing-zone die in 20 tot 30 minuten goed uit te leggen is.
 
+> **Let op: deze demo veroorzaakt werkelijke Azure-kosten.** Elke omgeving bevat onder andere een betaald `P1v3` App Service Plan. Dev, test en prod samen betekenen drie betaalde plannen. Ben je klaar met oefenen of neem je een langere pauze? Voer dan direct `./scripts/cleanup.sh` uit en controleer dat er niets is achtergebleven.
+
 ## Doel Van De Demo
 
 Met deze demo kun je laten zien hoe een financiële organisatie security-by-default en herhaalbaarheid kan combineren:
@@ -236,6 +238,8 @@ az deployment sub create \
   --parameters main.parameters.prod.bicepparam
 ```
 
+> **Stop je hier of ga je later verder?** Ruim dev, test en prod nu op met `./scripts/cleanup.sh`. De omgevingen blijven kosten genereren zolang de resources bestaan.
+
 ### 2. Ervaar Infrastructuurdrift Met What-If
 
 Infrastructuurdrift ontstaat wanneer iemand een gedeployde resource buiten Bicep om wijzigt. In deze oefening verwijdert de tijdelijke beheerder het deployment slot `staging` handmatig, terwijl dit slot nog steeds in de Bicep-code staat.
@@ -358,6 +362,8 @@ az role assignment delete \
 az ad group delete --group "$GROUP_ID"
 ```
 
+> **Klaar met de oefeningen?** Voer nu `./scripts/cleanup.sh` uit. Hiermee verwijder je de bekende Deployment Stacks en de resourcegroepen van dev, test en prod.
+
 ## Wat Je Tijdens De Demo Kunt Vertellen
 
 Start bij `main.bicep`. Laat zien dat dit bestand vooral orkestratie doet: resource group aanmaken, standaardnamen bepalen, tags centraal opbouwen en modules aanroepen.
@@ -376,13 +382,15 @@ Voor het CI/CD-deel kun je tijdens de training handmatig een GitHub Actions work
 
 ## Cleanup Commands
 
-Verwijder de resourcegroepen van dev, test en prod gelijktijdig:
+Ben je klaar met ontdekken of neem je een langere pauze, voer dan altijd het cleanup-script uit:
 
 ```bash
 ./scripts/cleanup.sh
 ```
 
-Het script start de drie verwijderingen parallel en wacht totdat alle bestaande resourcegroepen zijn verwijderd. Voor een afwijkende `applicationName` geef je de naam als argument mee:
+Het script verwijdert eerst bekende Deployment Stacks met `deleteAll`. Daarna verwijdert het eventuele resterende resourcegroepen van dev, test en prod parallel. Tot slot controleert het of er nog cursus-stacks of -resourcegroepen bestaan.
+
+Voor een afwijkende `applicationName` geef je de naam als argument mee:
 
 ```bash
 ./scripts/cleanup.sh "<applicationName>"

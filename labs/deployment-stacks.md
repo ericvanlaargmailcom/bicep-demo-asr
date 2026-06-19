@@ -31,7 +31,7 @@ az account show --output table
 
 Je account moet op subscriptionniveau resources en Deployment Stacks mogen aanmaken en verwijderen. Voor de optionele RBAC-module zijn daarnaast rechten nodig om role-assignments te maken. In dit lab blijft `principalId` leeg.
 
-> De App Service Plan gebruikt de betaalde SKU `P1v3`. Verwijder de stack aan het einde van het lab om onnodige kosten te voorkomen.
+> **Dit lab veroorzaakt werkelijke Azure-kosten.** De App Service Plan gebruikt de betaalde SKU `P1v3`. Stop je tussentijds of neem je een langere pauze, voer dan direct `./scripts/cleanup.sh` uit. Wacht niet tot een later moment om de omgeving op te ruimen.
 
 ## 1. Begin Met Een Schone Omgeving
 
@@ -112,6 +112,8 @@ az stack sub create \
 ```
 
 Dit commando gebruikt dezelfde `main.bicep` en modules als de gewone cursusdeployment. Het verschil is dat Azure nu ook een Deployment Stack-resource opslaat die de gedeployde resources beheert.
+
+> **Stop je hier of ga je later verder?** Voer `./scripts/cleanup.sh` uit. Het script herkent de bekende Deployment Stack en verwijdert zowel de stack als de beheerde omgeving.
 
 ## 5. Bekijk De Stack En De Beheerde Resources
 
@@ -262,6 +264,14 @@ az group exists \
 De tweede opdracht hoort `false` terug te geven.
 
 Het tweede aha-moment is dat je niet ieder onderdeel afzonderlijk hoeft te verwijderen. De stack gebruikt zijn lijst met beheerde resources en het ingestelde `deleteAll`-gedrag om de volledige omgeving op te ruimen.
+
+Voer als laatste veiligheidscontrole ook het algemene cleanup-script uit:
+
+```bash
+./scripts/cleanup.sh
+```
+
+Het script hoort te melden dat er niets meer te verwijderen is. Eventuele achtergebleven cursus-stacks of -resourcegroepen worden alsnog opgeruimd.
 
 ## Wat Je Uit Dit Lab Meeneemt
 
