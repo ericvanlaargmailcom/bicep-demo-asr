@@ -1,4 +1,4 @@
-# Secure Azure Landing Zone Mini-demo
+# Secure Azure Landing Zone Demo
 
 Deze repository bevat een compacte klantdemo voor ASR over herbruikbare Azure Bicep modules. De demo laat zien hoe je met een klein aantal gestandaardiseerde modules snel een veilige applicatieomgeving kunt uitrollen met consistente naming, tags, monitoring en private connectivity.
 
