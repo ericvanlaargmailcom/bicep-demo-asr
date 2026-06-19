@@ -233,7 +233,63 @@ az deployment sub create \
   --parameters main.parameters.prod.bicepparam
 ```
 
-### 2. Demonstreer RBAC Als Code
+### 2. Ervaar Infrastructuurdrift Met What-If
+
+Infrastructuurdrift ontstaat wanneer iemand een gedeployde resource buiten Bicep om wijzigt. In deze oefening verwijdert de tijdelijke beheerder het deployment slot `staging` handmatig, terwijl dit slot nog steeds in de Bicep-code staat.
+
+Stel eerst de namen van de dev-resources in:
+
+```bash
+RESOURCE_GROUP_NAME="rg-asr-asrdm-dev-we-001"
+WEB_APP_NAME="app-asr-asrdm-dev-we-001"
+```
+
+Controleer eerst dat het staging slot bestaat:
+
+```bash
+az webapp deployment slot list \
+  --resource-group "$RESOURCE_GROUP_NAME" \
+  --name "$WEB_APP_NAME" \
+  --query "[].{slot:name,state:state}" \
+  --output table
+```
+
+Simuleer vervolgens de handmatige verwijdering:
+
+```bash
+az webapp deployment slot delete \
+  --resource-group "$RESOURCE_GROUP_NAME" \
+  --name "$WEB_APP_NAME" \
+  --slot staging
+```
+
+Voer het eerdere `az webapp deployment slot list`-commando opnieuw uit om te controleren dat het slot verdwenen is. De Bicep-code bevat het staging slot nog steeds. Gebruik daarom `what-if` om de actuele Azure-omgeving met de gewenste configuratie te vergelijken:
+
+```bash
+az deployment sub what-if \
+  --location westeurope \
+  --template-file main.bicep \
+  --parameters main.parameters.dev.bicepparam
+```
+
+Zoek in de uitvoer naar het Web App-slot `staging`. Het ontbrekende slot en de bijbehorende diagnostic settings worden als `Create` weergegeven. `What-if` verandert zelf nog niets.
+
+Herstel daarna de gedeclareerde omgeving met dezelfde Bicep-deployment:
+
+```bash
+az deployment sub create \
+  --location westeurope \
+  --template-file main.bicep \
+  --parameters main.parameters.dev.bicepparam
+```
+
+Voer het eerdere `az webapp deployment slot list`-commando opnieuw uit. Het slot `staging` hoort nu weer te bestaan. Ongewijzigde resources worden niet opnieuw aangemaakt; de deployment herstelt de resources die ontbreken of afwijken van de Bicep-code.
+
+Je ziet hiermee dat Bicep geen Terraform-statefile nodig heeft om deze drift te vinden: ARM vergelijkt de gewenste template met de actuele configuratie in Azure.
+
+> Verwijder in deze oefening uitsluitend het staging slot en niet de productie-Web App. Eventuele applicatie-inhoud die handmatig in het slot is geplaatst, wordt niet door Bicep hersteld.
+
+### 3. Demonstreer RBAC Als Code
 
 De securitymodule maakt optioneel een Azure RBAC-role-assignment aan op de resource group. De module maakt de Entra ID-groep zelf niet aan. Je maakt daarom eerst een tijdelijke demogroep aan. In deze demo is `principalType` vastgezet op `Group`; een service principal, gebruiker of managed identity werkt hier dus niet.
 
