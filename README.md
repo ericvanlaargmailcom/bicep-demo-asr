@@ -56,6 +56,8 @@ bicep-demo-asr/
 ├─ main.parameters.dev.bicepparam
 ├─ main.parameters.test.bicepparam
 ├─ main.parameters.prod.bicepparam
+├─ labs/
+│  └─ deployment-stacks.md
 ├─ scripts/
 │  └─ cleanup.sh
 └─ modules/
@@ -386,3 +388,9 @@ Het script start de drie verwijderingen parallel en wacht totdat alle bestaande 
 ```
 
 Omdat deze versie geen Key Vault meer gebruikt, is er geen soft-delete of purge-stap nodig. De cleanup blijft daardoor geschikt voor herhaalde cursusdemo's.
+
+## Optioneel Lab – Deployment Stacks
+
+Wil je na de klassikale demo verder oefenen met resource-ownership en lifecyclebeheer, volg dan het zelfstandige lab [Deployment Stacks](labs/deployment-stacks.md).
+
+In dit lab gebruik je dezelfde Bicep-modules, maar beheer je de omgeving als één Deployment Stack. Je onderzoekt welke resources door de stack worden beheerd en verwijdert de volledige omgeving uiteindelijk gecontroleerd via de stack.
