@@ -80,10 +80,10 @@ De hoofdtemplate gebruikt deze parameters:
 - `location`: vastgezet op `westeurope`
 - `owner`: eigenaar voor governance
 - `costCenter`: kostenplaats voor chargeback/showback
-- `principalId`: optioneel object ID voor de voorbeeld-role-assignment
+- `principalId`: optioneel object-ID van een Entra ID-groep voor de voorbeeld-role-assignment
 - `roleDefinitionId`: optioneel aanpasbare role definition, standaard `Reader`
 
-De parameterbestanden gebruiken het Bicep-native `.bicepparam` formaat met dummywaarden. Vul `principalId` alleen met een echte Entra ID object ID als je de RBAC-module tijdens de demo wilt activeren.
+De parameterbestanden gebruiken het Bicep-native `.bicepparam` formaat met dummywaarden. Hoewel Azure de technische parameternaam `principalId` gebruikt, verwacht deze demo specifiek het object-ID van een **Entra ID-groep** en niet van een service principal, gebruiker of managed identity.
 
 ## Voorbereiding Op Een Schone Windows-Labpc
 
@@ -233,14 +233,71 @@ az deployment sub create \
   --parameters main.parameters.prod.bicepparam
 ```
 
-Voor een demo met RBAC kun je tijdelijk een principal meegeven:
+### 2. Demonstreer RBAC Als Code
+
+De securitymodule maakt optioneel een Azure RBAC-role-assignment aan op de resource group. De module maakt de Entra ID-groep zelf niet aan. Laat cursisten daarom eerst een tijdelijke demogroep maken. In deze demo is `principalType` vastgezet op `Group`; een service principal, gebruiker of managed identity werkt hier dus niet.
+
+Maak de tijdelijke groep aan en bewaar het object-ID:
+
+```bash
+GROUP_NAME="bicep-rbac-demo"
+GROUP_ID=$(az ad group create \
+  --display-name "$GROUP_NAME" \
+  --mail-nickname "$GROUP_NAME" \
+  --query id \
+  --output tsv)
+
+printf 'Entra group object ID: %s\n' "$GROUP_ID"
+```
+
+Hiervoor moet het cursusaccount groepen mogen aanmaken in Entra ID. Als dat niet is toegestaan, moet de docent vooraf één demogroep voorbereiden en kunnen cursisten het object-ID daarvan opzoeken met `az ad group show`.
+
+Deploy vervolgens de dev-omgeving met het object-ID van de groep. De Bicep-parameter heet technisch `principalId`, maar bevat hier dus een groeps-ID:
 
 ```bash
 az deployment sub create \
   --location westeurope \
   --template-file main.bicep \
   --parameters main.parameters.dev.bicepparam \
-  --parameters principalId="<entra-object-id>"
+  --parameters principalId="$GROUP_ID"
+```
+
+De standaardrol is `Reader`. De groep mag daardoor resources in de demo-resourcegroep bekijken, maar niet wijzigen of verwijderen. Controleer de aangemaakte assignment met Azure CLI:
+
+```bash
+SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+RESOURCE_GROUP_NAME="rg-asr-asrdm-dev-we-001"
+SCOPE="/subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${RESOURCE_GROUP_NAME}"
+
+az role assignment list \
+  --scope "$SCOPE" \
+  --assignee-object-id "$GROUP_ID" \
+  --output table
+```
+
+Laat tijdens de demo ook in de Azure Portal bij **Resource group > Access control (IAM) > Role assignments** zien dat de Entra-groep de rol **Reader** heeft.
+
+Wat deze demo over Bicep laat zien:
+
+- **RBAC is declaratieve infrastructuur:** toegangsrechten staan naast de resources in broncode en zijn daardoor reviewbaar en herhaalbaar.
+- **Least privilege:** de standaardrol is bewust `Reader` en de scope is beperkt tot één resource group.
+- **Optionele governance:** de securitymodule wordt alleen uitgevoerd wanneer `principalId` is ingevuld.
+- **Idempotency:** de naam van de role-assignment wordt met `guid()` deterministisch opgebouwd. Dezelfde deployment maakt daarom geen dubbele assignment.
+- **Herbruikbaarheid:** via `roleDefinitionId` kan hetzelfde patroon ook een andere ingebouwde of custom rol toewijzen.
+
+Een sterke afsluiting is om met een testgebruiker uit de groep in een privébrowser aan te melden. Laat zien dat deze gebruiker de resources kan bekijken, maar bijvoorbeeld geen resource kan verwijderen. Houd rekening met enkele minuten verwerkingstijd voor nieuwe RBAC-toewijzingen.
+
+De uitvoerder van de Bicep-deployment moet zelf rechten hebben om role-assignments te maken, bijvoorbeeld **Owner** of **User Access Administrator** op de betreffende scope.
+
+> Alleen opnieuw deployen zonder `principalId` verwijdert een bestaande assignment niet bij een incrementele deployment. Verwijder de demo-assignment daarom expliciet:
+
+```bash
+az role assignment delete \
+  --scope "$SCOPE" \
+  --assignee-object-id "$GROUP_ID" \
+  --role Reader
+
+az ad group delete --group "$GROUP_ID"
 ```
 
 ## Wat Je Tijdens De Demo Kunt Vertellen

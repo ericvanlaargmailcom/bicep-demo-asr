@@ -1,4 +1,4 @@
-@description('Entra ID principal object ID. Can be a user, group, service principal or managed identity.')
+@description('Entra ID group object ID.')
 param principalId string
 
 @description('Role definition ID. Defaults to Reader when supplied by main.bicep.')

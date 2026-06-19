@@ -25,7 +25,7 @@ param owner string
 @description('Cost center for showback/chargeback reporting.')
 param costCenter string
 
-@description('Optional Entra ID principal object ID for the sample role assignment. Leave empty to skip role assignment.')
+@description('Optional Entra ID group object ID for the sample role assignment. Leave empty to skip role assignment.')
 param principalId string = ''
 
 @description('Role definition ID for the optional sample role assignment. Defaults to Reader.')
