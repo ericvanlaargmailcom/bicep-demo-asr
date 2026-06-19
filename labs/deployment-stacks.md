@@ -130,10 +130,13 @@ az stack sub show \
 
 Open daarnaast in de Azure Portal:
 
-1. Zoek op **Deployment stacks**.
-2. Open `stack-asr-asrdm-dev-we-001`.
-3. Bekijk de beheerde resources.
-4. Controleer dat de resourcegroep `rg-asr-asrdm-dev-we-001` onderdeel van de stack is.
+1. Open **Subscriptions** en selecteer de subscription waarin je de stack hebt gedeployd.
+2. Selecteer in het linkermenu **Deployment stacks**. Gebruik eventueel het zoekveld bovenaan het menu van de subscription.
+3. Open `stack-asr-asrdm-dev-we-001`.
+4. Bekijk de beheerde resources.
+5. Controleer dat de resourcegroep `rg-asr-asrdm-dev-we-001` onderdeel van de stack is.
+
+> Deployment Stacks verschijnen niet als zelfstandige service in de algemene zoekbalk van de Azure Portal. Je opent ze altijd vanuit de resourcegroep of subscription waarop de stack is aangemaakt.
 
 ## 6. Begrijp Action On Unmanage
 
