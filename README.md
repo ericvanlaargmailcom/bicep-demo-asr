@@ -254,14 +254,13 @@ az webapp deployment slot list \
   --output table
 ```
 
-Simuleer vervolgens de handmatige verwijdering:
+Simuleer vervolgens via de Azure Portal een handmatige wijziging buiten Bicep om:
 
-```bash
-az webapp deployment slot delete \
-  --resource-group "$RESOURCE_GROUP_NAME" \
-  --name "$WEB_APP_NAME" \
-  --slot staging
-```
+1. Open in de Azure Portal de resourcegroep `rg-asr-asrdm-dev-we-001`.
+2. Open de Web App `app-asr-asrdm-dev-we-001`.
+3. Selecteer in het menu **Deployment > Deployment slots**.
+4. Selecteer het slot **staging**.
+5. Kies **Delete** en bevestig de verwijdering.
 
 Voer het eerdere `az webapp deployment slot list`-commando opnieuw uit om te controleren dat het slot verdwenen is. De Bicep-code bevat het staging slot nog steeds. Gebruik daarom `what-if` om de actuele Azure-omgeving met de gewenste configuratie te vergelijken:
 
