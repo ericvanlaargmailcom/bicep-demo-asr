@@ -191,10 +191,21 @@ az account show --output table
 
 Ga pas verder wanneer `az account show` de juiste tenant en subscription toont. Een Entra Global Administrator-rol geeft niet automatisch toegang tot iedere Azure-subscription; de subscription moet ook zichtbaar zijn in de bovenstaande lijst.
 
-Valideer of de Bicep compileert:
+Valideer of de Bicep compileert. Bij een geldige template verschijnt een compacte JSON-bevestiging; bij een fout toont de Bicep-compiler de foutmelding en geeft het commando een mislukte exitcode terug:
 
 ```bash
-az bicep build --file main.bicep
+if az bicep build --file main.bicep --stdout > /dev/null; then
+  printf '{"success":true,"file":"main.bicep"}\n'
+else
+  printf '{"success":false,"file":"main.bicep"}\n'
+  false
+fi
+```
+
+Wil je ook de volledige gegenereerde ARM-template als JSON bekijken, gebruik dan:
+
+```bash
+az bicep build --file main.bicep --stdout
 ```
 
 Deploy de dev-omgeving:
