@@ -235,7 +235,7 @@ az deployment sub create \
 
 ### 2. Demonstreer RBAC Als Code
 
-De securitymodule maakt optioneel een Azure RBAC-role-assignment aan op de resource group. De module maakt de Entra ID-groep zelf niet aan. Laat cursisten daarom eerst een tijdelijke demogroep maken. In deze demo is `principalType` vastgezet op `Group`; een service principal, gebruiker of managed identity werkt hier dus niet.
+De securitymodule maakt optioneel een Azure RBAC-role-assignment aan op de resource group. De module maakt de Entra ID-groep zelf niet aan. Je maakt daarom eerst een tijdelijke demogroep aan. In deze demo is `principalType` vastgezet op `Group`; een service principal, gebruiker of managed identity werkt hier dus niet.
 
 Maak de tijdelijke groep aan en bewaar het object-ID:
 
@@ -250,7 +250,7 @@ GROUP_ID=$(az ad group create \
 printf 'Entra group object ID: %s\n' "$GROUP_ID"
 ```
 
-Hiervoor moet het cursusaccount groepen mogen aanmaken in Entra ID. Als dat niet is toegestaan, moet de docent vooraf één demogroep voorbereiden en kunnen cursisten het object-ID daarvan opzoeken met `az ad group show`.
+Hiervoor moet je cursusaccount groepen mogen aanmaken in Entra ID. Als dat niet is toegestaan, vraag je docent dan om een vooraf aangemaakte demogroep. Je kunt het object-ID daarvan opzoeken met `az ad group show`.
 
 Deploy vervolgens de dev-omgeving met het object-ID van de groep. De Bicep-parameter heet technisch `principalId`, maar bevat hier dus een groeps-ID:
 
@@ -275,7 +275,7 @@ az role assignment list \
   --output table
 ```
 
-Laat tijdens de demo ook in de Azure Portal bij **Resource group > Access control (IAM) > Role assignments** zien dat de Entra-groep de rol **Reader** heeft.
+Controleer ook in de Azure Portal bij **Resource group > Access control (IAM) > Role assignments** dat de Entra-groep de rol **Reader** heeft.
 
 Wat deze demo over Bicep laat zien:
 
@@ -285,7 +285,7 @@ Wat deze demo over Bicep laat zien:
 - **Idempotency:** de naam van de role-assignment wordt met `guid()` deterministisch opgebouwd. Dezelfde deployment maakt daarom geen dubbele assignment.
 - **Herbruikbaarheid:** via `roleDefinitionId` kan hetzelfde patroon ook een andere ingebouwde of custom rol toewijzen.
 
-Een sterke afsluiting is om met een testgebruiker uit de groep in een privébrowser aan te melden. Laat zien dat deze gebruiker de resources kan bekijken, maar bijvoorbeeld geen resource kan verwijderen. Houd rekening met enkele minuten verwerkingstijd voor nieuwe RBAC-toewijzingen.
+Meld je eventueel in een privébrowser aan als een testgebruiker uit de groep. Controleer dat deze gebruiker de resources kan bekijken, maar bijvoorbeeld geen resource kan verwijderen. Houd rekening met enkele minuten verwerkingstijd voor nieuwe RBAC-toewijzingen.
 
 De uitvoerder van de Bicep-deployment moet zelf rechten hebben om role-assignments te maken, bijvoorbeeld **Owner** of **User Access Administrator** op de betreffende scope.
 
