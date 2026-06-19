@@ -373,17 +373,16 @@ Voor het CI/CD-deel kun je tijdens de training handmatig een GitHub Actions work
 
 ## Cleanup Commands
 
-Verwijder de dev-omgeving:
+Verwijder de resourcegroepen van dev, test en prod gelijktijdig:
 
 ```bash
-./scripts/cleanup.sh dev
+./scripts/cleanup.sh
 ```
 
-Voor test en prod:
+Het script start de drie verwijderingen parallel en wacht totdat alle bestaande resourcegroepen zijn verwijderd. Voor een afwijkende `applicationName` geef je de naam als argument mee:
 
 ```bash
-./scripts/cleanup.sh test
-./scripts/cleanup.sh prod
+./scripts/cleanup.sh "<applicationName>"
 ```
 
 Omdat deze versie geen Key Vault meer gebruikt, is er geen soft-delete of purge-stap nodig. De cleanup blijft daardoor geschikt voor herhaalde cursusdemo's.
