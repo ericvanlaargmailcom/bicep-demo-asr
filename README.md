@@ -92,31 +92,29 @@ De parameterbestanden gebruiken het Bicep-native `.bicepparam` formaat met dummy
 
 ## Voorbereiding Op Een Schone Windows-Labpc
 
-De labpc heeft voor deze voorbereiding internettoegang nodig. Gebruik eventueel **PowerShell** voor de eerste installatie met `winget`, of gebruik de handmatige installers. Gebruik daarna **Git Bash** voor alle Bicep-, Git- en Azure CLI-commando's. Git Bash wordt automatisch met Git for Windows geïnstalleerd.
+De labpc heeft voor deze voorbereiding internettoegang nodig. Gebruik **PowerShell** voor de eerste installatie met Chocolatey, of gebruik de handmatige installers. Gebruik daarna **Git Bash** voor alle Bicep-, Git- en Azure CLI-commando's. Git Bash wordt automatisch met Git for Windows geïnstalleerd.
 
 ### 1. Installeer Visual Studio Code, Git en Azure CLI
 
-Kies één van de onderstaande installatieroutes. Gebruik de handmatige route wanneer `winget` niet is geïnstalleerd, niet wordt herkend of door organisatiebeleid is geblokkeerd.
+Kies één van de onderstaande installatieroutes. Chocolatey is standaard aanwezig op de labpc's en is daarom de aanbevolen route. Gebruik de handmatige route wanneer Chocolatey niet werkt of door organisatiebeleid is geblokkeerd.
 
-#### Route A: Installatie Met WinGet
+#### Route A: Installatie Met Chocolatey
 
-Open PowerShell, bij voorkeur als administrator, en controleer eerst of WinGet beschikbaar is:
-
-```powershell
-winget --version
-```
-
-Installeer daarna de benodigde onderdelen:
+Open PowerShell als administrator en controleer eerst of Chocolatey beschikbaar is:
 
 ```powershell
-winget install --exact --id Microsoft.VisualStudioCode
-winget install --exact --id Git.Git
-winget install --exact --id Microsoft.AzureCLI
+choco --version
 ```
 
-Krijg je de melding dat `winget` niet wordt herkend? Ga dan verder met route B. Voor deze cursus hoef je WinGet zelf niet te installeren.
+Installeer Visual Studio Code, Git en Azure CLI:
 
-#### Route B: Handmatige Installatie Zonder WinGet
+```powershell
+choco install vscode git azure-cli -y
+```
+
+Ga verder met route B wanneer Chocolatey niet wordt herkend of de installatie wordt geblokkeerd.
+
+#### Route B: Handmatige Installatie
 
 Download en installeer de volgende pakketten via de officiële websites:
 
