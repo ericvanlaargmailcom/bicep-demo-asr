@@ -31,7 +31,7 @@ param principalId string = ''
 @description('Role definition ID for the optional sample role assignment. Defaults to Reader.')
 param roleDefinitionId string = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 
-@description('Deploy the staging slot. Set to false in the Deployment Stacks lab to demonstrate managed resource deletion.')
+@description('Deploy the staging slot. Set to false to compare incremental Bicep behavior with Deployment Stack lifecycle management.')
 param deployStagingSlot bool = true
 
 var locationShort = 'we'
