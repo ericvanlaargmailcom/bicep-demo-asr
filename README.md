@@ -8,7 +8,7 @@ De insteek is bewust compact: geen enterprise landing zone met tientallen lagen,
 
 ## Doel Van De Demo
 
-Met deze demo kun je laten zien hoe een financiële organisatie security-by-default en herhaalbaarheid kan combineren:
+In deze demo ontdek je hoe een financiële organisatie security-by-default en herhaalbaarheid kan combineren:
 
 - Eén `main.bicep` op subscription scope maakt de resource group en orkestreert de modules.
 - Herbruikbare modules leveren netwerk, storage, Web App runtime, monitoring en optionele RBAC.
@@ -321,7 +321,7 @@ Je ziet hiermee dat Bicep geen Terraform-statefile nodig heeft om deze drift te 
 
 De vorige oefening liet zien dat gewone Bicep een ontbrekende resource kan herstellen zolang die resource nog in de gewenste configuratie staat. Nu draai je het scenario om: het staging slot bestaat nog in Azure, maar je haalt het uit de gewenste configuratie.
 
-De parameter `deployStagingSlot=false` zorgt ervoor dat de conditionele declaraties van het slot en zijn diagnostic settings niet in de gegenereerde ARM-template komen. Dit simuleert het verwijderen van die resources uit de Bicep-code zonder dat cursisten het modulebestand handmatig hoeven te wijzigen.
+De parameter `deployStagingSlot=false` zorgt ervoor dat de conditionele declaraties van het slot en zijn diagnostic settings niet in de gegenereerde ARM-template komen. Hiermee simuleer je dat de resources uit de Bicep-code zijn verwijderd, zonder dat je het modulebestand handmatig hoeft te wijzigen.
 
 Bekijk eerst met een gewone incrementele deployment wat Azure zou veranderen:
 
@@ -620,7 +620,7 @@ az ad group delete --group "$GROUP_ID"
 
 > **Klaar met de oefeningen?** Voer nu `./scripts/cleanup.sh` uit. Hiermee verwijder je de bekende Deployment Stacks en de resourcegroepen van dev, test en prod.
 
-## Wat Je Tijdens De Demo Kunt Vertellen
+## Wat Je Uit De Architectuur Kunt Afleiden
 
 Start bij `main.bicep`. Laat zien dat dit bestand vooral orkestratie doet: resource group aanmaken, standaardnamen bepalen, tags centraal opbouwen en modules aanroepen.
 
