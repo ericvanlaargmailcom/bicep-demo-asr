@@ -195,17 +195,17 @@ Controleer dat rechtsonder in het terminalvenster **Git Bash** staat. Alle volge
 
 ### B1. Meld Je Aan Bij Azure
 
+#### B1.1 Meld Je Aan
+
 Log in met het Global Administrator-account van de eigen Virsoft-tenant:
 
 ```bash
 az login
 ```
 
-Wanneer het account toegang heeft tot meerdere tenants of wanneer de verkeerde tenant wordt geopend, log dan expliciet in op de juiste tenant:
+Verschijnt in de browser een pop-up waarin je het accounttype moet kiezen, selecteer dan **Werk- of schoolaccount**. Kies niet voor een persoonlijk Microsoft-account; het Global Administrator-account hoort bij Microsoft Entra ID van de Virsoft-tenant.
 
-```bash
-az login --tenant "<tenant-id>"
-```
+#### B1.2 Gebruik Eventueel Een Device Code
 
 Als de browserlogin op de labpc niet werkt, gebruik dan:
 
@@ -213,20 +213,17 @@ Als de browserlogin op de labpc niet werkt, gebruik dan:
 az login --use-device-code
 ```
 
-Bekijk de beschikbare subscriptions:
+#### B1.3 Controleer Tenant En Subscription
+
+Controleer na het aanmelden welke tenant en subscription actief zijn:
 
 ```bash
-az account list --output table
-```
-
-Selecteer de eigen Azure-subscription op naam of ID en controleer de selectie:
-
-```bash
-az account set --subscription "<subscription-id-of-subscription-name>"
 az account show --output table
 ```
 
-Ga pas verder wanneer `az account show` de juiste tenant en subscription toont. Een Entra Global Administrator-rol geeft niet automatisch toegang tot iedere Azure-subscription; de subscription moet ook zichtbaar zijn in de bovenstaande lijst.
+Ga pas verder wanneer `az account show` de juiste tenant en subscription toont.
+
+#### B1.4 Valideer De Bicep-template
 
 Valideer of de Bicep compileert. Bij een geldige template verschijnt een compacte JSON-bevestiging; bij een fout toont de Bicep-compiler de foutmelding en geeft het commando een mislukte exitcode terug:
 
@@ -245,6 +242,8 @@ Wil je ook de volledige gegenereerde ARM-template als JSON bekijken, gebruik dan
 az bicep build --file main.bicep --stdout
 ```
 
+#### B1.5 Deploy De Dev-omgeving
+
 Deploy de dev-omgeving:
 
 ```bash
@@ -253,6 +252,8 @@ az deployment sub create \
   --template-file main.bicep \
   --parameters main.parameters.dev.bicepparam
 ```
+
+#### B1.6 Deploy Eventueel Test Of Prod
 
 Deploy test of prod door het parameterbestand te wisselen:
 
@@ -276,12 +277,16 @@ az deployment sub create \
 
 Infrastructuurdrift ontstaat wanneer iemand een gedeployde resource buiten Bicep om wijzigt. In deze oefening verwijdert de tijdelijke beheerder het deployment slot `staging` handmatig, terwijl dit slot nog steeds in de Bicep-code staat.
 
+#### B2.1 Stel De Resourcenamen In
+
 Stel eerst de namen van de dev-resources in:
 
 ```bash
 RESOURCE_GROUP_NAME="rg-asr-asrdm-dev-we-001"
 WEB_APP_NAME="app-asr-asrdm-dev-we-001"
 ```
+
+#### B2.2 Controleer Het Staging Slot
 
 Controleer eerst dat het staging slot bestaat:
 
@@ -293,6 +298,8 @@ az webapp deployment slot list \
   --output table
 ```
 
+#### B2.3 Verwijder Het Slot Handmatig
+
 Simuleer vervolgens via de Azure Portal een handmatige wijziging buiten Bicep om:
 
 1. Open in de Azure Portal de resourcegroep `rg-asr-asrdm-dev-we-001`.
@@ -300,6 +307,8 @@ Simuleer vervolgens via de Azure Portal een handmatige wijziging buiten Bicep om
 3. Selecteer in het menu **Deployment > Deployment slots**.
 4. Selecteer het slot **staging**.
 5. Kies **Delete** en bevestig de verwijdering.
+
+#### B2.4 Detecteer Drift Met What-If
 
 Voer het eerdere `az webapp deployment slot list`-commando opnieuw uit om te controleren dat het slot verdwenen is. De Bicep-code bevat het staging slot nog steeds. Gebruik daarom `what-if` om de actuele Azure-omgeving met de gewenste configuratie te vergelijken:
 
@@ -311,6 +320,8 @@ az deployment sub what-if \
 ```
 
 Zoek in de uitvoer naar het Web App-slot `staging`. Het ontbrekende slot en de bijbehorende diagnostic settings worden als `Create` weergegeven. `What-if` verandert zelf nog niets.
+
+#### B2.5 Herstel Het Slot Met Bicep
 
 Herstel daarna de gedeclareerde omgeving met dezelfde Bicep-deployment:
 
@@ -329,9 +340,13 @@ Je ziet hiermee dat Bicep geen Terraform-statefile nodig heeft om deze drift te 
 
 ### B3. Verwijder Een Resource Uit De Gewenste Configuratie
 
+#### B3.1 Schakel Het Staging Slot Uit
+
 De vorige oefening liet zien dat gewone Bicep een ontbrekende resource kan herstellen zolang die resource nog in de gewenste configuratie staat. Nu draai je het scenario om: het staging slot bestaat nog in Azure, maar je haalt het uit de gewenste configuratie.
 
 De parameter `deployStagingSlot=false` zorgt ervoor dat de conditionele declaraties van het slot en zijn diagnostic settings niet in de gegenereerde ARM-template komen. Hiermee simuleer je dat de resources uit de Bicep-code zijn verwijderd, zonder dat je het modulebestand handmatig hoeft te wijzigen.
+
+#### B3.2 Bekijk De Wijziging Met What-If
 
 Bekijk eerst met een gewone incrementele deployment wat Azure zou veranderen:
 
@@ -343,6 +358,8 @@ az deployment sub what-if \
   --parameters deployStagingSlot=false
 ```
 
+#### B3.3 Voer De Incrementele Deployment Uit
+
 Het staging slot wordt niet als `Delete` weergegeven. Voer daarna dezelfde configuratie daadwerkelijk uit:
 
 ```bash
@@ -352,6 +369,8 @@ az deployment sub create \
   --parameters main.parameters.dev.bicepparam \
   --parameters deployStagingSlot=false
 ```
+
+#### B3.4 Controleer Het Staging Slot
 
 Controleer opnieuw:
 
@@ -363,6 +382,8 @@ az webapp deployment slot list \
   --output table
 ```
 
+#### B3.5 Verklaar Het Resultaat
+
 Het slot bestaat nog steeds. Gewone Bicep-deployments gebruiken standaard de incrementele modus: Azure maakt en wijzigt gedeclareerde resources, maar verwijdert niet automatisch een bestaande resource die uit de nieuwe template is verdwenen.
 
 Dit is de beperking die de handmatige drift-oefening niet liet zien:
@@ -372,11 +393,15 @@ Dit is de beperking die de handmatige drift-oefening niet liet zien:
 
 ### B4. Ruim De Gewone Deployment Op
 
+#### B4.1 Voer Het Cleanup-script Uit
+
 Verwijder de gewone Bicep-omgeving voordat je dezelfde omgeving als Deployment Stack maakt. Zo begint de stack met een schone omgeving en is duidelijk welke resources door de stack worden beheerd:
 
 ```bash
 ./scripts/cleanup.sh
 ```
+
+#### B4.2 Controleer De Resourcegroep
 
 Controleer dat de dev-resourcegroep verdwenen is:
 
@@ -391,11 +416,15 @@ De verwachte uitvoer is `false`.
 
 Een Deployment Stack voegt resource-ownership en lifecycle-instellingen toe aan een gewone Bicep-deployment. Azure houdt bij welke resource-ID's door de stack worden beheerd.
 
+#### B5.1 Controleer De Azure CLI-versie
+
 Deployment Stacks vereisen Azure CLI 2.61.0 of nieuwer. Controleer de geïnstalleerde versie:
 
 ```bash
 az version
 ```
+
+#### B5.2 Bouw Het Parameterbestand
 
 Zet het Bicep-parameterbestand om naar een ARM JSON-parameterbestand:
 
@@ -405,11 +434,15 @@ az bicep build-params \
   --outfile /tmp/main.parameters.dev.json
 ```
 
+#### B5.3 Stel De Stacknaam In
+
 Stel een vaste stacknaam in:
 
 ```bash
 STACK_NAME="stack-asr-asrdm-dev-we-001"
 ```
+
+#### B5.4 Valideer De Stack
 
 Valideer de stack:
 
@@ -422,6 +455,8 @@ az stack sub validate \
   --action-on-unmanage deleteAll \
   --deny-settings-mode none
 ```
+
+#### B5.5 Maak De Stack
 
 Maak daarna de stack en de dev-omgeving:
 
@@ -436,6 +471,8 @@ az stack sub create \
   --description "ASR Bicep Deployment Stacks lab" \
   --yes
 ```
+
+#### B5.6 Controleer De Stack En Resources
 
 Bekijk de stack en zijn beheerde resources:
 
@@ -457,6 +494,8 @@ az webapp deployment slot list \
 
 ### B6. Laat De Deployment Stack Het Slot Verwijderen
 
+#### B6.1 Werk De Stack Bij Zonder Staging Slot
+
 Werk dezelfde stack bij en zet het staging slot opnieuw buiten de gewenste configuratie:
 
 ```bash
@@ -472,6 +511,8 @@ az stack sub create \
   --yes
 ```
 
+#### B6.2 Controleer Dat Het Slot Is Verwijderd
+
 Controleer de deployment slots:
 
 ```bash
@@ -484,6 +525,8 @@ az webapp deployment slot list \
 
 Het slot `staging` is nu verwijderd. Ook de diagnostic settings van het slot worden niet langer beheerd en zijn verwijderd.
 
+#### B6.3 Verklaar Het Verschil Met Gewone Bicep
+
 Het verschil met stap **B3** is resource-ownership:
 
 - De gewone deployment wist niet dat het bestaande slot bij een eerdere template hoorde en liet het daarom staan.
@@ -492,6 +535,8 @@ Het verschil met stap **B3** is resource-ownership:
 Deployment Stacks bewaren hiermee een vorm van geheugen over **ownership**, maar geen volledige Terraform-statefile met alle resource-eigenschappen en providerinformatie.
 
 > Deployment Stacks ondersteunen momenteel geen What-If. Controleer daarom vóór een stack-update zorgvuldig de template, parameters, lijst met beheerde resources en de ingestelde waarde voor `action-on-unmanage`.
+
+#### B6.4 Herstel Het Staging Slot
 
 Herstel het slot voor eventuele vervolgoefeningen:
 
@@ -510,6 +555,8 @@ az stack sub create \
 
 ### B7. Begrijp Complete Mode, Deployment Stacks En Terraform
 
+#### B7.1 Vergelijk De Verwijdermechanismen
+
 Complete Mode is geen onderdeel van Deployment Stacks. Het is een oudere deploymentmodus van ARM waarbij resources in de doel-resourcegroep kunnen worden verwijderd wanneer ze niet in de template staan.
 
 Het verschil zit in de selectie van resources:
@@ -520,9 +567,13 @@ Het verschil zit in de selectie van resources:
 | ARM Complete Mode | Resources in de doel-resourcegroep die niet in de template staan. | Nee |
 | Deployment Stack | Resources die eerder door de stack werden beheerd en nu onbeheerd raken. | Ja |
 
+#### B7.2 Begrijp Het Risico Van Complete Mode
+
 Complete Mode kan daardoor ook een handmatig aangemaakte of door een ander proces beheerde resource verwijderen wanneer die toevallig in dezelfde resourcegroep staat maar niet in de template voorkomt. Deployment Stacks werken gerichter vanuit hun lijst met beheerde resources.
 
 Microsoft raadt voor verwijderingen met Bicep Deployment Stacks aan. Complete Mode wordt geleidelijk uitgefaseerd, werkt alleen op resource group deployments en wordt daarom in deze cursus niet uitgevoerd.
+
+#### B7.3 Vergelijk Bicep Met Terraform
 
 Terraform gebruikt een statefile en onthoudt daarmee uitgebreider welke resources en eigenschappen het beheert. Conceptueel:
 
@@ -534,6 +585,8 @@ Het praktische aha-moment blijft hetzelfde: wanneer een eerder beheerde resource
 
 ### B8. Verwijder De Deployment Stack En Omgeving
 
+#### B8.1 Bekijk De Beheerde Resources
+
 Bekijk eventueel nog één keer welke resources worden beheerd:
 
 ```bash
@@ -543,6 +596,8 @@ az stack sub show \
   --output table
 ```
 
+#### B8.2 Verwijder De Stack En Omgeving
+
 Verwijder daarna de stack, de beheerde resourcegroep en de resources:
 
 ```bash
@@ -551,6 +606,8 @@ az stack sub delete \
   --action-on-unmanage deleteAll \
   --yes
 ```
+
+#### B8.3 Controleer De Verwijdering
 
 Controleer dat de stack en resourcegroep verdwenen zijn:
 
@@ -563,7 +620,11 @@ De tweede opdracht hoort `false` terug te geven.
 
 ### B9. Demonstreer RBAC Als Code
 
+#### B9.1 Begrijp De Opzet
+
 De securitymodule maakt optioneel een Azure RBAC-role-assignment aan op de resource group. De module maakt de Entra ID-groep zelf niet aan. Je maakt daarom eerst een tijdelijke demogroep aan. In deze demo is `principalType` vastgezet op `Group`; een service principal, gebruiker of managed identity werkt hier dus niet.
+
+#### B9.2 Maak Een Tijdelijke Entra-groep
 
 Maak de tijdelijke groep aan en bewaar het object-ID:
 
@@ -580,6 +641,8 @@ printf 'Entra group object ID: %s\n' "$GROUP_ID"
 
 Hiervoor moet je cursusaccount groepen mogen aanmaken in Entra ID. Als dat niet is toegestaan, vraag je docent dan om een vooraf aangemaakte demogroep. Je kunt het object-ID daarvan opzoeken met `az ad group show`.
 
+#### B9.3 Deploy De Role-assignment
+
 Deploy vervolgens de dev-omgeving met het object-ID van de groep. De Bicep-parameter heet technisch `principalId`, maar bevat hier dus een groeps-ID:
 
 ```bash
@@ -589,6 +652,8 @@ az deployment sub create \
   --parameters main.parameters.dev.bicepparam \
   --parameters principalId="$GROUP_ID"
 ```
+
+#### B9.4 Controleer De Role-assignment
 
 De standaardrol is `Reader`. De groep mag daardoor resources in de demo-resourcegroep bekijken, maar niet wijzigen of verwijderen. Controleer de aangemaakte assignment met Azure CLI:
 
@@ -605,6 +670,8 @@ az role assignment list \
 
 Controleer ook in de Azure Portal bij **Resource group > Access control (IAM) > Role assignments** dat de Entra-groep de rol **Reader** heeft.
 
+#### B9.5 Leg De Bicep-principes Uit
+
 Wat deze demo over Bicep laat zien:
 
 - **RBAC is declaratieve infrastructuur:** toegangsrechten staan naast de resources in broncode en zijn daardoor reviewbaar en herhaalbaar.
@@ -616,6 +683,8 @@ Wat deze demo over Bicep laat zien:
 Meld je eventueel in een privébrowser aan als een testgebruiker uit de groep. Controleer dat deze gebruiker de resources kan bekijken, maar bijvoorbeeld geen resource kan verwijderen. Houd rekening met enkele minuten verwerkingstijd voor nieuwe RBAC-toewijzingen.
 
 De uitvoerder van de Bicep-deployment moet zelf rechten hebben om role-assignments te maken, bijvoorbeeld **Owner** of **User Access Administrator** op de betreffende scope.
+
+#### B9.6 Verwijder De Demo-assignment En Groep
 
 > Alleen opnieuw deployen zonder `principalId` verwijdert een bestaande assignment niet bij een incrementele deployment. Verwijder de demo-assignment daarom expliciet:
 
@@ -632,7 +701,11 @@ az ad group delete --group "$GROUP_ID"
 
 ## C. Wat Je Uit De Architectuur Kunt Afleiden
 
+### C1. Bekijk De Orkestratie In Main.bicep
+
 Start bij `main.bicep`. Laat zien dat dit bestand vooral orkestratie doet: resource group aanmaken, standaardnamen bepalen, tags centraal opbouwen en modules aanroepen.
+
+### C2. Bekijk De Herbruikbare Modules
 
 Open daarna de modules:
 
@@ -642,7 +715,11 @@ Open daarna de modules:
 - `modules/webapp/webApp.bicep`: gestandaardiseerde PHP applicatieruntime met managed identity, HTTPS only, Application Insights en een `staging` slot voor CI/CD.
 - `modules/security/roleAssignments.bicep`: klein voorbeeld van uitbreidbare governance op resource group scope.
 
+### C3. Leg De Kernboodschap Uit
+
 De kernboodschap: teams hoeven niet telkens opnieuw securitykeuzes te maken. Ze consumeren goedgekeurde modules, vullen parameters in en krijgen dezelfde veilige baseline voor dev, test en prod.
+
+### C4. Bespreek CI/CD En Deployment Slots
 
 Voor het CI/CD-deel kun je tijdens de training handmatig een GitHub Actions workflow koppelen aan de Web App of aan het `staging` slot. De App Service Plan SKU is bewust `P1v3`, omdat Premium tiers deployment slots ondersteunen en deze demo ruimte laat om tot 20 slots te gebruiken. Voor een goedkopere korte demo kun je de SKU tijdelijk verlagen, maar dan verlies je de 20-slot capaciteit.
 
