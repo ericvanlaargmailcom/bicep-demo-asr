@@ -88,11 +88,11 @@ De hoofdtemplate gebruikt deze parameters:
 
 De parameterbestanden gebruiken het Bicep-native `.bicepparam` formaat met dummywaarden. Hoewel Azure de technische parameternaam `principalId` gebruikt, verwacht deze demo specifiek het object-ID van een **Entra ID-groep** en niet van een service principal, gebruiker of managed identity.
 
-## Voorbereiding Op Een Schone Windows-Labpc
+## A. Voorbereiding Op Een Schone Windows-Labpc
 
 De labpc heeft voor deze voorbereiding internettoegang nodig. Gebruik **PowerShell** voor de eerste installatie met Chocolatey, of gebruik de handmatige installers. Gebruik daarna **Git Bash** voor alle Bicep-, Git- en Azure CLI-commando's. Git Bash wordt automatisch met Git for Windows geïnstalleerd.
 
-### 1. Installeer Visual Studio Code, Git en Azure CLI
+### A1. Installeer Visual Studio Code, Git en Azure CLI
 
 Kies één van de onderstaande installatieroutes. Chocolatey is standaard aanwezig op de labpc's en is daarom de aanbevolen route. Gebruik de handmatige route wanneer Chocolatey niet werkt of door organisatiebeleid is geblokkeerd.
 
@@ -148,7 +148,7 @@ az version
 
 Wanneer een commando niet wordt herkend, herstart dan eerst de labpc en voer de controle opnieuw uit. Als een installer door organisatiebeleid of ontbrekende administratorrechten wordt geblokkeerd, neem dan contact op met de trainer of werkplekbeheerder.
 
-### 2. Installeer Bicep Vanuit Git Bash
+### A2. Installeer Bicep Vanuit Git Bash
 
 Installeer de Bicep CLI via Azure CLI:
 
@@ -165,7 +165,7 @@ code --install-extension ms-azuretools.vscode-bicep
 
 Je kunt dit ook handmatig doen in VS Code via **Extensions** (`Ctrl+Shift+X`), zoek op **Bicep** en kies de extensie van Microsoft.
 
-### 3. Clone De GitHub-Repository
+### A3. Clone De GitHub-Repository
 
 Ga naar een lokale werkmap en download de demo vanaf GitHub:
 
@@ -176,7 +176,7 @@ git clone https://github.com/ericvanlaargmailcom/bicep-demo-asr.git
 
 Hierdoor wordt een nieuwe map met de naam `bicep-demo-asr` aangemaakt. De repository is openbaar; voor het klonen is geen GitHub-account of aanmelding nodig. Verschijnt er toch een aanmeldvenster, annuleer dit dan en controleer of je exact de bovenstaande HTTPS-URL hebt gebruikt.
 
-### 4. Open De Demo In Visual Studio Code
+### A4. Open De Demo In Visual Studio Code
 
 Ga naar de zojuist gekloonde projectmap en open deze in VS Code:
 
@@ -185,11 +185,15 @@ cd ~/Documents/bicep-demo-asr
 code .
 ```
 
-Open daarna in VS Code een terminal via **Terminal > New Terminal** en controleer dat **Git Bash** als terminalprofiel is geselecteerd. Alle volgende deployment- en cleanupcommando's worden in deze terminal uitgevoerd.
+Open bovenin VS Code het menu **Terminal** en kies **Git Bash** in de lijst met terminalprofielen, zoals hieronder is weergegeven:
 
-## Deployment Commands Met Azure CLI
+![Git Bash selecteren als terminalprofiel in Visual Studio Code](images/vscode-git-bash-selecteren.png)
 
-### 1. Meld Je Aan Bij Azure
+Controleer dat rechtsonder in het terminalvenster **Git Bash** staat. Alle volgende deployment- en cleanupcommando's worden in deze terminal uitgevoerd.
+
+## B. Deployment Commands Met Azure CLI
+
+### B1. Meld Je Aan Bij Azure
 
 Log in met het Global Administrator-account van de eigen Virsoft-tenant:
 
@@ -268,7 +272,7 @@ az deployment sub create \
 
 > **Stop je hier of ga je later verder?** Ruim dev, test en prod nu op met `./scripts/cleanup.sh`. De omgevingen blijven kosten genereren zolang de resources bestaan.
 
-### 2. Ervaar Infrastructuurdrift Met What-If
+### B2. Ervaar Infrastructuurdrift Met What-If
 
 Infrastructuurdrift ontstaat wanneer iemand een gedeployde resource buiten Bicep om wijzigt. In deze oefening verwijdert de tijdelijke beheerder het deployment slot `staging` handmatig, terwijl dit slot nog steeds in de Bicep-code staat.
 
@@ -323,7 +327,7 @@ Je ziet hiermee dat Bicep geen Terraform-statefile nodig heeft om deze drift te 
 
 > Verwijder in deze oefening uitsluitend het staging slot en niet de productie-Web App. Eventuele applicatie-inhoud die handmatig in het slot is geplaatst, wordt niet door Bicep hersteld.
 
-### 3. Verwijder Een Resource Uit De Gewenste Configuratie
+### B3. Verwijder Een Resource Uit De Gewenste Configuratie
 
 De vorige oefening liet zien dat gewone Bicep een ontbrekende resource kan herstellen zolang die resource nog in de gewenste configuratie staat. Nu draai je het scenario om: het staging slot bestaat nog in Azure, maar je haalt het uit de gewenste configuratie.
 
@@ -366,7 +370,7 @@ Dit is de beperking die de handmatige drift-oefening niet liet zien:
 - **Resource ontbreekt in Azure, maar staat nog in Bicep:** What-If toont `Create` en een deployment herstelt de resource.
 - **Resource bestaat in Azure, maar staat niet meer in Bicep:** een gewone incrementele deployment laat de resource staan.
 
-### 4. Ruim De Gewone Deployment Op
+### B4. Ruim De Gewone Deployment Op
 
 Verwijder de gewone Bicep-omgeving voordat je dezelfde omgeving als Deployment Stack maakt. Zo begint de stack met een schone omgeving en is duidelijk welke resources door de stack worden beheerd:
 
@@ -383,7 +387,7 @@ az group exists \
 
 De verwachte uitvoer is `false`.
 
-### 5. Deploy De Omgeving Als Deployment Stack
+### B5. Deploy De Omgeving Als Deployment Stack
 
 Een Deployment Stack voegt resource-ownership en lifecycle-instellingen toe aan een gewone Bicep-deployment. Azure houdt bij welke resource-ID's door de stack worden beheerd.
 
@@ -451,7 +455,7 @@ az webapp deployment slot list \
   --output table
 ```
 
-### 6. Laat De Deployment Stack Het Slot Verwijderen
+### B6. Laat De Deployment Stack Het Slot Verwijderen
 
 Werk dezelfde stack bij en zet het staging slot opnieuw buiten de gewenste configuratie:
 
@@ -480,7 +484,7 @@ az webapp deployment slot list \
 
 Het slot `staging` is nu verwijderd. Ook de diagnostic settings van het slot worden niet langer beheerd en zijn verwijderd.
 
-Het verschil met stap 3 is resource-ownership:
+Het verschil met stap **B3** is resource-ownership:
 
 - De gewone deployment wist niet dat het bestaande slot bij een eerdere template hoorde en liet het daarom staan.
 - De Deployment Stack wist dat het slot eerder door deze stack werd beheerd. Toen het slot uit de gewenste configuratie verdween, bepaalde `deleteAll` dat de onbeheerd geraakte resource moest worden verwijderd.
@@ -504,7 +508,7 @@ az stack sub create \
   --yes
 ```
 
-### 7. Begrijp Complete Mode, Deployment Stacks En Terraform
+### B7. Begrijp Complete Mode, Deployment Stacks En Terraform
 
 Complete Mode is geen onderdeel van Deployment Stacks. Het is een oudere deploymentmodus van ARM waarbij resources in de doel-resourcegroep kunnen worden verwijderd wanneer ze niet in de template staan.
 
@@ -528,7 +532,7 @@ Terraform gebruikt een statefile en onthoudt daarmee uitgebreider welke resource
 
 Het praktische aha-moment blijft hetzelfde: wanneer een eerder beheerde resource uit de code verdwijnt, kan een Deployment Stack die gericht verwijderen; een gewone incrementele Bicep-deployment doet dat niet.
 
-### 8. Verwijder De Deployment Stack En Omgeving
+### B8. Verwijder De Deployment Stack En Omgeving
 
 Bekijk eventueel nog één keer welke resources worden beheerd:
 
@@ -557,7 +561,7 @@ az group exists --name "$RESOURCE_GROUP_NAME"
 
 De tweede opdracht hoort `false` terug te geven.
 
-### 9. Demonstreer RBAC Als Code
+### B9. Demonstreer RBAC Als Code
 
 De securitymodule maakt optioneel een Azure RBAC-role-assignment aan op de resource group. De module maakt de Entra ID-groep zelf niet aan. Je maakt daarom eerst een tijdelijke demogroep aan. In deze demo is `principalType` vastgezet op `Group`; een service principal, gebruiker of managed identity werkt hier dus niet.
 
@@ -626,7 +630,7 @@ az ad group delete --group "$GROUP_ID"
 
 > **Klaar met de oefeningen?** Voer nu `./scripts/cleanup.sh` uit. Hiermee verwijder je de bekende Deployment Stacks en de resourcegroepen van dev, test en prod.
 
-## Wat Je Uit De Architectuur Kunt Afleiden
+## C. Wat Je Uit De Architectuur Kunt Afleiden
 
 Start bij `main.bicep`. Laat zien dat dit bestand vooral orkestratie doet: resource group aanmaken, standaardnamen bepalen, tags centraal opbouwen en modules aanroepen.
 
@@ -642,7 +646,7 @@ De kernboodschap: teams hoeven niet telkens opnieuw securitykeuzes te maken. Ze 
 
 Voor het CI/CD-deel kun je tijdens de training handmatig een GitHub Actions workflow koppelen aan de Web App of aan het `staging` slot. De App Service Plan SKU is bewust `P1v3`, omdat Premium tiers deployment slots ondersteunen en deze demo ruimte laat om tot 20 slots te gebruiken. Voor een goedkopere korte demo kun je de SKU tijdelijk verlagen, maar dan verlies je de 20-slot capaciteit.
 
-## Cleanup Commands
+## D. Cleanup Commands
 
 Ben je klaar met ontdekken of neem je een langere pauze, voer dan altijd het cleanup-script uit:
 
@@ -660,9 +664,9 @@ Voor een afwijkende `applicationName` geef je de naam als argument mee:
 
 Omdat deze versie geen Key Vault meer gebruikt, is er geen soft-delete of purge-stap nodig. De cleanup blijft daardoor geschikt voor herhaalde cursusdemo's.
 
-## Verdieping – Deployment Stacks
+## E. Verdieping – Deployment Stacks
 
-### Action On Unmanage
+### E1. Action On Unmanage
 
 `action-on-unmanage` bepaalt wat Azure doet wanneer een resource door een stack-update of het verwijderen van de stack niet langer wordt beheerd:
 
@@ -681,7 +685,7 @@ az stack sub show \
   --output table
 ```
 
-### Deny Settings
+### E2. Deny Settings
 
 Deployment Stacks kunnen handmatige control-planewijzigingen aan beheerde resources beperken:
 
@@ -691,7 +695,7 @@ Deployment Stacks kunnen handmatige control-planewijzigingen aan beheerde resour
 
 Deny settings zijn krachtig en kunnen ook beheerders hinderen tijdens herstel. Gebruik ze pas nadat uitzonderingen, beheerrollen en break-glass-toegang zijn ontworpen. Deze cursus gebruikt daarom `--deny-settings-mode none`.
 
-### Resources Loskoppelen In Plaats Van Verwijderen
+### E3. Resources Loskoppelen In Plaats Van Verwijderen
 
 Wil je de stack verwijderen maar de omgeving behouden, gebruik dan:
 
@@ -704,7 +708,7 @@ az stack sub delete \
 
 De resources blijven dan in Azure bestaan, maar de verwijderde stack houdt hun ownership niet langer bij. Je kunt ze later opnieuw onder beheer brengen door een stack met de juiste template bij te werken of te maken. Begin voor het cursuslab steeds met een schone omgeving, zodat duidelijk zichtbaar blijft welke stack de resources beheert.
 
-### Problemen Oplossen
+### E4. Problemen Oplossen
 
 #### De Stack Bestaat Al
 
@@ -728,7 +732,7 @@ az account show --output table
 
 De uitvoerder moet op subscriptionniveau Deployment Stacks en de gedeclareerde resources mogen beheren. Voor deny settings zijn aanvullende rechten of de daarvoor bedoelde Deployment Stack-rollen nodig.
 
-### Meer Informatie
+### E5. Meer Informatie
 
 - [Microsoft Learn: Deployment Stacks met Bicep](https://learn.microsoft.com/azure/azure-resource-manager/bicep/deployment-stacks)
 - [Microsoft Learn: ARM-deploymentmodi](https://learn.microsoft.com/azure/azure-resource-manager/templates/deployment-modes)
