@@ -374,6 +374,8 @@ De precieze aantallen kunnen verschillen. Controleer vooral dat het staging slot
 
 Het staging slot wordt niet als `Delete` weergegeven. Voer daarna dezelfde configuratie daadwerkelijk uit:
 
+> **Waarom duurt dit toch enkele minuten?** Incrementeel betekent niet dat Azure uitsluitend gewijzigde regels uitvoert. Azure Resource Manager valideert de volledige template en alle modules opnieuw, berekent afhankelijkheden en module-outputs en biedt de gedeclareerde resources opnieuw aan bij de verschillende Resource Providers. Die providers controleren vervolgens of de actuele configuratie overeenkomt met de gewenste configuratie. Daardoor kan de deployment ongeveer even lang duren als een gewone update, ook wanneer uiteindelijk vrijwel niets verandert. Het belangrijke kenmerk van de incrementele modus is hier dat een bestaande resource die niet meer in de template staat niet automatisch wordt verwijderd.
+
 ```bash
 az deployment sub create \
   --name "$DEPLOYMENT_NAME" \
