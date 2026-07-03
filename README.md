@@ -766,10 +766,6 @@ De parameterbestanden en deployments maken bovendien zichtbaar welke standaard i
 
 De winst zit dus niet alleen in minder Bicep-code schrijven. Herbruikbare modules vertalen architectuurafspraken naar een herhaalbare technische standaard. Ze maken de veilige werkwijze de eenvoudige standaardroute voor teams en zorgen dat verbeteringen centraal, gecontroleerd en aantoonbaar kunnen worden doorgevoerd.
 
-### C4. Bespreek CI/CD En Deployment Slots
-
-Voor het CI/CD-deel kun je tijdens de training handmatig een GitHub Actions workflow koppelen aan de Web App of aan het `staging` slot. De App Service Plan SKU is bewust `P1v3`, omdat Premium tiers deployment slots ondersteunen en deze demo ruimte laat om tot 20 slots te gebruiken. Voor een goedkopere korte demo kun je de SKU tijdelijk verlagen, maar dan verlies je de 20-slot capaciteit.
-
 ## D. Cleanup Commands
 
 Ben je klaar met ontdekken of neem je een langere pauze, voer dan altijd het cleanup-script uit:
