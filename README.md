@@ -174,7 +174,7 @@ cd ~/Documents
 git clone https://github.com/ericvanlaargmailcom/bicep-demo-asr.git
 ```
 
-Hierdoor wordt een nieuwe map met de naam `bicep-demo-asr` aangemaakt. Als GitHub om aanmelding vraagt, meld je dan aan met een GitHub-account dat toegang heeft tot de repository.
+Hierdoor wordt een nieuwe map met de naam `bicep-demo-asr` aangemaakt. De repository is openbaar; voor het klonen is geen GitHub-account of aanmelding nodig. Verschijnt er toch een aanmeldvenster, annuleer dit dan en controleer of je exact de bovenstaande HTTPS-URL hebt gebruikt.
 
 ### 4. Open De Demo In Visual Studio Code
 
