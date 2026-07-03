@@ -228,9 +228,19 @@ Voer na een geslaagde deployment een visuele controle uit:
 
 De Web App en Storage Account bevatten een unieke suffix. Daardoor kunnen meerdere cursisten dezelfde template gebruiken zonder dat hun wereldwijd unieke resourcenamen botsen.
 
-#### B1.5 Deploy Eventueel Test Of Prod
+#### B1.5 Deploy Test En Prod
 
-Deploy test of prod door het parameterbestand te wisselen:
+Voor ASR laat deze stap zien hoe één goedgekeurde infrastructuurstandaard gecontroleerd door verschillende omgevingen kan bewegen. Dezelfde `main.bicep` en herbruikbare modules worden voor dev, test en prod gebruikt; alleen het parameterbestand verandert.
+
+Dit is nuttig omdat:
+
+- security-instellingen, naming, tags, monitoring en private connectivity in iedere omgeving op dezelfde manier worden toegepast;
+- teams wijzigingen eerst in dev en test kunnen beoordelen voordat dezelfde standaard naar prod gaat;
+- omgevingen van elkaar gescheiden blijven, terwijl configuratieverschillen expliciet en reviewbaar in parameterbestanden staan;
+- handmatige configuratiefouten en ongewenste afwijkingen tussen omgevingen worden beperkt;
+- deployments en parameterwijzigingen via Git achteraf herleidbaar en controleerbaar zijn.
+
+Deploy eerst test en daarna prod door alleen het parameterbestand te wisselen:
 
 ```bash
 az deployment sub create \
@@ -248,7 +258,7 @@ az deployment sub create \
   --parameters main.parameters.prod.bicepparam
 ```
 
-> **Stop je hier of ga je later verder?** Ruim dev, test en prod nu op met `./scripts/cleanup.sh`. De omgevingen blijven kosten genereren zolang de resources bestaan.
+Virsoft ruimt de volledige cursus-subscription na maximaal zes uur automatisch op. De vervolgoefeningen gebruiken alleen de dev-omgeving; test en prod blijven als demonstratie van de herhaalbare standaard bestaan totdat de automatische cleanup plaatsvindt of je later zelf `./scripts/cleanup.sh` uitvoert.
 
 ### B2. Ervaar Infrastructuurdrift Met What-If
 
