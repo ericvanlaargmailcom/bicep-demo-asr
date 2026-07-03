@@ -67,7 +67,7 @@ In deze eerste fase werk je volledig visueel. Je ziet welke keuzes nodig zijn om
 5. Gebruik als **Virtual machine name** `vmportal001`. Een Windows-computernaam mag maximaal 15 tekens bevatten.
 6. Kies **West Europe** als regio.
 7. Kies **Windows Server 2025 Datacenter: Azure Edition - x64 Gen 2** als image.
-8. Kies `Standard_B2ms` als VM-grootte.
+8. Kies `B2ms` als VM-grootte.
 9. Gebruik `azureuser` als gebruikersnaam en stel een tijdelijk sterk wachtwoord in. Bewaar dit alleen zolang deze oefening duurt.
 10. Kies bij **Public inbound ports** voor **Allow selected ports** en selecteer **RDP (3389)** en **HTTP (80)**.
 11. Open het tabblad **Management**, schakel **Auto-shutdown** in en kies een tijdstip later op dezelfde cursusdag.
