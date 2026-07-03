@@ -366,6 +366,10 @@ az deployment sub what-if \
   --parameters deployStagingSlot=false
 ```
 
+De samenvatting kan bijvoorbeeld `5 to modify`, `11 no change` en `4 to ignore` tonen. De `Modify`-regels kunnen dezelfde What-If-ruis bevatten die bij **B2.4** is uitgelegd; controleer de getoonde eigenschappen in plaats van alleen het aantal. Het belangrijke verschil is dat het bestaande staging slot nu niet meer in de gegenereerde template staat. Bij een incrementele deployment classificeert Azure bestaande resources buiten de template als **Ignore**: ze worden niet beheerd door deze deployment, maar ook niet verwijderd.
+
+De precieze aantallen kunnen verschillen. Controleer vooral dat het staging slot niet als **Delete** wordt weergegeven. Dat is het gedrag dat deze oefening wil aantonen.
+
 #### B3.3 Voer De Incrementele Deployment Uit
 
 Het staging slot wordt niet als `Delete` weergegeven. Voer daarna dezelfde configuratie daadwerkelijk uit:
