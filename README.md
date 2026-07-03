@@ -429,7 +429,7 @@ De verwachte uitvoer is `false`.
 
 ### B5. Deploy De Omgeving Als Deployment Stack
 
-Een Deployment Stack voegt resource-ownership en lifecycle-instellingen toe aan een gewone Bicep-deployment. Azure houdt bij welke resource-ID's door de stack worden beheerd.
+Een Deployment Stack voegt aan een gewone Bicep-deployment lifecyclebeheer toe dat conceptueel lijkt op Terraform. Standaard beschrijft Bicep wel de gewenste configuratie, maar een gewone incrementele deployment onthoudt niet blijvend welke resources bij eerdere deployments hoorden en verwijdert een resource daarom niet wanneer die later uit de template verdwijnt. Een Deployment Stack bewaart wél het ownership van de beheerde resource-ID's en past lifecycle-instellingen toe wanneer een resource niet langer wordt gedeclareerd, bijvoorbeeld verwijderen met `deleteAll` of alleen loskoppelen van de stack. Dit lijkt op de manier waarop Terraform beheerde resources via state volgt, maar een Deployment Stack is geen volledige Terraform-statefile met alle resource-eigenschappen en providerinformatie.
 
 #### B5.1 Controleer De Azure CLI-versie
 
@@ -440,6 +440,10 @@ az version
 ```
 
 #### B5.2 Bouw Het Parameterbestand
+
+De gewone `az deployment sub create`-commando's uit de eerdere oefeningen kunnen het gekoppelde `.bicepparam`-bestand rechtstreeks verwerken. Het `az stack sub`-commando verwerkt een parameterbestand daarentegen in het standaard ARM JSON-formaat. Daarom moet het Bicep-parameterbestand voor deze stack eerst worden gecompileerd.
+
+`bicep build-params` verandert de parameterwaarden niet. Het zet de mensvriendelijke Bicep-syntax om naar de JSON-structuur die Azure Resource Manager voor de stack verwacht. Het gegenereerde bestand wordt bewust in `/tmp` geplaatst: `main.parameters.dev.bicepparam` blijft de enige bron die je onderhoudt en het tijdelijke JSON-bestand hoeft niet in Git te worden opgeslagen.
 
 Zet het Bicep-parameterbestand om naar een ARM JSON-parameterbestand:
 
@@ -488,16 +492,19 @@ az stack sub create \
 
 #### B5.6 Controleer De Stack En Resources
 
+Een Deployment Stack is zelf een Azure-resource op het gekozen beheerniveau. Deze stack is op subscriptionniveau aangemaakt en is daarom ook vanuit de cursus-subscription in de Azure Portal terug te vinden. De portalweergave voor Deployment Stacks is nog beperkt, maar laat wel zien dat de stack bestaat en welke resources hij beheert.
+
 Voer na het aanmaken van de stack eerst een visuele controle uit in de Azure Portal:
 
 1. Minimaliseer Cloud Shell zodat de Azure Portal weer volledig zichtbaar is.
-2. Zoek bovenin de portal naar **Deployment stacks** en open deze dienst.
-3. Selecteer de cursus-subscription en open de stack `stack-asr-asrdm-dev-we-001`.
-4. Controleer op **Overview** dat de provisioningstatus **Succeeded** is.
-5. Open **Managed resources** en controleer dat de stack de resourcegroep en de daarin uitgerolde resources beheert.
-6. Zoek daarna naar **Resource groups** en open `rg-asr-asrdm-dev-we-001`.
-7. Bekijk op **Overview** opnieuw de uitgerolde resources en controleer dat onder andere het Virtual Network, de Web App, het Storage Account en de monitoringresources aanwezig zijn.
-8. Open in het linkermenu **Deployments** en controleer dat de moduledeployments de status **Succeeded** hebben.
+2. Zoek bovenin de portal naar **Subscriptions** en open de cursus-subscription.
+3. Selecteer in het linkermenu van de subscription **Deployment stacks**.
+4. Controleer dat de stack `stack-asr-asrdm-dev-we-001` in de lijst staat en open deze.
+5. Controleer dat de provisioningstatus **Succeeded** is en dat de stack op de cursus-subscription is aangemaakt.
+6. Bekijk de beheerde resources van de stack. Controleer dat `rg-asr-asrdm-dev-we-001` in de lijst staat en zoek ook naar het Web App-slot `staging`. Hiermee zie je dat de stack niet alleen resources heeft uitgerold, maar hun resource-ID's nu ook voor lifecyclebeheer volgt.
+7. Zoek daarna naar **Resource groups** en open `rg-asr-asrdm-dev-we-001`.
+8. Bekijk op **Overview** opnieuw de uitgerolde resources en controleer dat onder andere het Virtual Network, de Web App, het Storage Account en de monitoringresources aanwezig zijn.
+9. Open in het linkermenu **Deployments** en controleer dat de moduledeployments de status **Succeeded** hebben.
 
 Bekijk vervolgens vanuit Cloud Shell de stack en zijn beheerde resources:
 
@@ -507,7 +514,9 @@ az stack sub show \
   --output json
 ```
 
-Controleer ook dat het staging slot opnieuw bestaat:
+Controleer ook dat het staging slot opnieuw bestaat. Bij **B4** is de eerdere dev-omgeving opgeruimd en bij **B5.5** heeft de Deployment Stack een nieuwe dev-omgeving gemaakt met `deployStagingSlot=true`, de standaardwaarde uit de template. Het slot moet daarom opnieuw zijn aangemaakt én door de stack worden beheerd.
+
+Deze controle is een belangrijke voorwaarde voor **B6**. Daar wordt hetzelfde slot uit de gewenste configuratie gehaald en moet de stack het dankzij `deleteAll` verwijderen. Wanneer het slot hier al ontbreekt, kun je in B6 niet aantonen dat de Deployment Stack lifecyclebeheer toepast; een ontbrekend slot kan dan ten onrechte op een geslaagde verwijdering lijken.
 
 ```bash
 az webapp deployment slot list \
