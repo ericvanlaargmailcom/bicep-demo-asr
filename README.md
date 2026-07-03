@@ -109,13 +109,22 @@ Verschijnt de registratiewizard niet automatisch, open dan [Beveiligingsgegevens
 
 ### A2. Start Azure Cloud Shell Met Bash
 
+Controleer eerst of Cloud Shell voor de subscription beschikbaar is:
+
+1. Zoek bovenin de Azure Portal naar **Subscriptions** en open de eigen subscription.
+2. Kies in het linkermenu onder **Settings** voor **Resource providers**.
+3. Zoek naar `Microsoft.CloudShell`.
+4. Staat de status op **NotRegistered**? Selecteer de provider, kies **Register** en wacht totdat de status **Registered** is.
+
+Verschijnt de knop **Register** niet of ontbreekt hiervoor toestemming, meld dit dan bij de trainer.
+
+Start daarna Cloud Shell:
+
 1. Klik rechtsboven in de Azure Portal op het pictogram **Cloud Shell** (`>_`).
 2. Kies **Bash** wanneer naar het shelltype wordt gevraagd.
 3. Kies bij de eerste start **No storage account required** voor een tijdelijke sessie.
 4. Selecteer de eigen Azure-subscription en kies **Apply**.
 5. Wacht totdat de Bash-prompt verschijnt.
-
-> De trainer moet de resourceprovider `Microsoft.CloudShell` vooraf in de cursus-subscription registreren. Meld het bij de trainer wanneer Cloud Shell aangeeft dat deze provider niet is geregistreerd.
 
 Controleer de vooraf geïnstalleerde hulpmiddelen:
 
