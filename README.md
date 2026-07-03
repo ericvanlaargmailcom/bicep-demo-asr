@@ -110,6 +110,8 @@ Installeer Visual Studio Code, Git en Azure CLI:
 choco install vscode git azure-cli -y
 ```
 
+Wanneer de installatie is voltooid, voer dan geen volgende labcommando's meer uit in PowerShell. **Sluit PowerShell volledig af**, sla route B over en ga verder bij **Start Git Bash En Controleer De Installatie**.
+
 Ga verder met route B wanneer Chocolatey niet wordt herkend of de installatie wordt geblokkeerd.
 
 #### Route B: Handmatige Installatie
@@ -130,9 +132,13 @@ Gebruik de algemene documentatie wanneer een directe download niet werkt:
 
 - [Azure CLI voor Windows](https://learn.microsoft.com/cli/azure/install-azure-cli-windows)
 
-Sluit na route A of B alle geopende PowerShell-, opdrachtprompt- en Git Bash-vensters. Open vervolgens **Git Bash** vanuit het Startmenu. Hierdoor worden de nieuwe commando's via het bijgewerkte `PATH` gevonden.
+#### Start Git Bash En Controleer De Installatie
 
-Controleer daarna de installatie:
+Voer na route A of B de volgende stappen in deze volgorde uit:
+
+1. Sluit alle geopende PowerShell-, opdrachtprompt- en Git Bash-vensters volledig af.
+2. Open **Git Bash** vanuit het Windows Startmenu. Hierdoor worden de nieuwe commando's via het bijgewerkte `PATH` gevonden.
+3. Controleer vanuit **Git Bash** of Visual Studio Code, Git en Azure CLI correct zijn geïnstalleerd:
 
 ```bash
 code --version
