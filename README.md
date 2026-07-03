@@ -109,17 +109,6 @@ Verschijnt de registratiewizard niet automatisch, open dan [Beveiligingsgegevens
 
 ### A2. Start Azure Cloud Shell Met Bash
 
-Controleer eerst of Cloud Shell voor de subscription beschikbaar is:
-
-1. Zoek bovenin de Azure Portal naar **Subscriptions** en open de eigen subscription.
-2. Kies in het linkermenu onder **Settings** voor **Resource providers**.
-3. Zoek naar `Microsoft.CloudShell`.
-4. Staat de status op **NotRegistered**? Selecteer de provider, kies **Register** en wacht totdat de status **Registered** is.
-
-Verschijnt de knop **Register** niet of ontbreekt hiervoor toestemming, meld dit dan bij de trainer.
-
-Start daarna Cloud Shell:
-
 1. Klik rechtsboven in de Azure Portal op het pictogram **Cloud Shell** (`>_`).
 2. Kies **Bash** wanneer naar het shelltype wordt gevraagd.
 3. Kies bij de eerste start **No storage account required** voor een tijdelijke sessie.
@@ -130,7 +119,7 @@ Controleer de vooraf geïnstalleerde hulpmiddelen:
 
 ```bash
 az version
-az bicep version
+bicep --version
 git --version
 ```
 
@@ -179,7 +168,7 @@ Ga pas verder wanneer `pwd` eindigt op `/bicep-demo-asr` en `az account show` de
 Valideer of de Bicep compileert. Bij een geldige template verschijnt een compacte JSON-bevestiging; bij een fout toont de Bicep-compiler de foutmelding en geeft het commando een mislukte exitcode terug:
 
 ```bash
-if az bicep build --file main.bicep --stdout > /dev/null; then
+if bicep build main.bicep --stdout > /dev/null; then
   printf '{"success":true,"file":"main.bicep"}\n'
 else
   printf '{"success":false,"file":"main.bicep"}\n'
@@ -190,7 +179,7 @@ fi
 Wil je ook de volledige gegenereerde ARM-template als JSON bekijken, gebruik dan:
 
 ```bash
-az bicep build --file main.bicep --stdout
+bicep build main.bicep --stdout
 ```
 
 #### B1.3 Deploy De Dev-omgeving
@@ -380,8 +369,7 @@ az version
 Zet het Bicep-parameterbestand om naar een ARM JSON-parameterbestand:
 
 ```bash
-az bicep build-params \
-  --file main.parameters.dev.bicepparam \
+bicep build-params main.parameters.dev.bicepparam \
   --outfile /tmp/main.parameters.dev.json
 ```
 
