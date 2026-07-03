@@ -195,7 +195,24 @@ Controleer dat rechtsonder in het terminalvenster **Git Bash** staat. Alle volge
 
 ### B1. Meld Je Aan Bij Azure
 
-#### B1.1 Meld Je Aan
+#### B1.1 Activeer MFA Met Microsoft Authenticator
+
+Voer deze eenmalige stap uit voordat je Azure CLI gebruikt of een deployment start:
+
+1. Open [portal.azure.com](https://portal.azure.com) in de browser.
+2. Meld je aan met het Global Administrator-account van de eigen Virsoft-tenant. Kies **Werk- of schoolaccount** wanneer Microsoft om het accounttype vraagt.
+3. Kies **Volgende** wanneer de melding verschijnt dat meer informatie vereist is.
+4. Installeer **Microsoft Authenticator** op je smartphone als deze app nog niet is geïnstalleerd.
+5. Open Microsoft Authenticator, sta meldingen en cameratoegang toe wanneer daarom wordt gevraagd en kies het plus-teken gevolgd door **Werk- of schoolaccount > QR-code scannen**.
+6. Scan met de app de QR-code die in de browser wordt getoond.
+7. Keur de testmelding in Microsoft Authenticator goed en rond alle resterende stappen in de browser af.
+8. Controleer dat de Azure Portal opent voordat je verdergaat.
+
+Verschijnt de registratiewizard niet automatisch, open dan [Beveiligingsgegevens](https://mysignins.microsoft.com/security-info), kies **Aanmeldingsmethode toevoegen** en selecteer **Microsoft Authenticator**. Zie zo nodig de [officiële Microsoft-instructie voor het instellen van beveiligingsgegevens](https://support.microsoft.com/en-US/accounts-billing/work-school/set-up-security-info-from-a-sign-in-page).
+
+> Ga pas verder wanneer MFA volledig is ingesteld. Anders kan een deployment stoppen met foutcode `AADSTS50079` en de melding dat registratie voor meervoudige verificatie vereist is.
+
+#### B1.2 Meld Je Aan Met Azure CLI
 
 Log in met het Global Administrator-account van de eigen Virsoft-tenant:
 
@@ -205,7 +222,7 @@ az login
 
 Verschijnt in de browser een pop-up waarin je het accounttype moet kiezen, selecteer dan **Werk- of schoolaccount**. Kies niet voor een persoonlijk Microsoft-account; het Global Administrator-account hoort bij Microsoft Entra ID van de Virsoft-tenant.
 
-#### B1.2 Gebruik Eventueel Een Device Code
+#### B1.3 Gebruik Eventueel Een Device Code
 
 Als de browserlogin op de labpc niet werkt, gebruik dan:
 
@@ -213,7 +230,7 @@ Als de browserlogin op de labpc niet werkt, gebruik dan:
 az login --use-device-code
 ```
 
-#### B1.3 Controleer Tenant En Subscription
+#### B1.4 Controleer Tenant En Subscription
 
 Controleer na het aanmelden welke tenant en subscription actief zijn:
 
@@ -223,7 +240,7 @@ az account show --output table
 
 Ga pas verder wanneer `az account show` de juiste tenant en subscription toont.
 
-#### B1.4 Valideer De Bicep-template
+#### B1.5 Valideer De Bicep-template
 
 Valideer of de Bicep compileert. Bij een geldige template verschijnt een compacte JSON-bevestiging; bij een fout toont de Bicep-compiler de foutmelding en geeft het commando een mislukte exitcode terug:
 
@@ -242,7 +259,7 @@ Wil je ook de volledige gegenereerde ARM-template als JSON bekijken, gebruik dan
 az bicep build --file main.bicep --stdout
 ```
 
-#### B1.5 Deploy De Dev-omgeving
+#### B1.6 Deploy De Dev-omgeving
 
 Deploy de dev-omgeving:
 
@@ -253,7 +270,7 @@ az deployment sub create \
   --parameters main.parameters.dev.bicepparam
 ```
 
-#### B1.6 Deploy Eventueel Test Of Prod
+#### B1.7 Deploy Eventueel Test Of Prod
 
 Deploy test of prod door het parameterbestand te wisselen:
 
