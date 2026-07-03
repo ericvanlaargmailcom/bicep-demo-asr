@@ -22,6 +22,8 @@ De demo rolt per omgeving een applicatie-resource-group uit:
 
 - Resource group: `rg-asr-{applicationName}-{environment}-we-001`
 - Virtual network: `vnet-asr-{applicationName}-{environment}-we-001`
+- Web App: `app-asr-{applicationName}-{environment}-we-001-{uniqueSuffix}`
+- Storage account: `st{applicationName}{environment}{uniqueSuffix}`
 - Subnets:
   - `subnet-app` met NSG
   - `subnet-data` met NSG
@@ -87,6 +89,8 @@ De hoofdtemplate gebruikt deze parameters:
 - `deployStagingSlot`: bepaalt of het staging slot wordt uitgerold, standaard `true`
 
 De parameterbestanden gebruiken het Bicep-native `.bicepparam` formaat met dummywaarden. Hoewel Azure de technische parameternaam `principalId` gebruikt, verwacht deze demo specifiek het object-ID van een **Entra ID-groep** en niet van een service principal, gebruiker of managed identity.
+
+Web App- en Storage Account-namen moeten wereldwijd uniek zijn. De template voegt daarom automatisch een deterministische `uniqueString` op basis van de subscription-ID toe. Cursisten hoeven hiervoor geen eigen naam te bedenken.
 
 ## A. Voorbereiding In Azure Portal En Cloud Shell
 
@@ -187,7 +191,10 @@ bicep build main.bicep --stdout
 Deploy de dev-omgeving:
 
 ```bash
+DEPLOYMENT_NAME="asr-dev"
+
 az deployment sub create \
+  --name "$DEPLOYMENT_NAME" \
   --location westeurope \
   --template-file main.bicep \
   --parameters main.parameters.dev.bicepparam
@@ -199,6 +206,7 @@ Deploy test of prod door het parameterbestand te wisselen:
 
 ```bash
 az deployment sub create \
+  --name asr-test \
   --location westeurope \
   --template-file main.bicep \
   --parameters main.parameters.test.bicepparam
@@ -206,6 +214,7 @@ az deployment sub create \
 
 ```bash
 az deployment sub create \
+  --name asr-prod \
   --location westeurope \
   --template-file main.bicep \
   --parameters main.parameters.prod.bicepparam
@@ -219,11 +228,20 @@ Infrastructuurdrift ontstaat wanneer iemand een gedeployde resource buiten Bicep
 
 #### B2.1 Stel De Resourcenamen In
 
-Stel eerst de namen van de dev-resources in:
+Haal de werkelijke namen van de dev-resources op uit de deployment-output. De Web App-naam bevat een automatisch gegenereerde suffix en is daarom voor iedere subscription anders:
 
 ```bash
-RESOURCE_GROUP_NAME="rg-asr-asrdm-dev-we-001"
-WEB_APP_NAME="app-asr-asrdm-dev-we-001"
+DEPLOYMENT_NAME="asr-dev"
+RESOURCE_GROUP_NAME=$(az deployment sub show \
+  --name "$DEPLOYMENT_NAME" \
+  --query "properties.outputs.resourceGroupName.value" \
+  --output tsv)
+WEB_APP_NAME=$(az deployment sub show \
+  --name "$DEPLOYMENT_NAME" \
+  --query "properties.outputs.webAppName.value" \
+  --output tsv)
+
+printf 'Resource group: %s\nWeb App: %s\n' "$RESOURCE_GROUP_NAME" "$WEB_APP_NAME"
 ```
 
 #### B2.2 Controleer Het Staging Slot
@@ -242,8 +260,8 @@ az webapp deployment slot list \
 
 Simuleer vervolgens via de Azure Portal een handmatige wijziging buiten Bicep om:
 
-1. Open in de Azure Portal de resourcegroep `rg-asr-asrdm-dev-we-001`.
-2. Open de Web App `app-asr-asrdm-dev-we-001`.
+1. Open in de Azure Portal de resourcegroep waarvan de naam bij **B2.1** is getoond.
+2. Open de Web App waarvan de naam bij **B2.1** is getoond.
 3. Selecteer in het menu **Deployment > Deployment slots**.
 4. Selecteer het slot **staging**.
 5. Kies **Delete** en bevestig de verwijdering.
@@ -267,6 +285,7 @@ Herstel daarna de gedeclareerde omgeving met dezelfde Bicep-deployment:
 
 ```bash
 az deployment sub create \
+  --name "$DEPLOYMENT_NAME" \
   --location westeurope \
   --template-file main.bicep \
   --parameters main.parameters.dev.bicepparam
@@ -304,6 +323,7 @@ Het staging slot wordt niet als `Delete` weergegeven. Voer daarna dezelfde confi
 
 ```bash
 az deployment sub create \
+  --name "$DEPLOYMENT_NAME" \
   --location westeurope \
   --template-file main.bicep \
   --parameters main.parameters.dev.bicepparam \
@@ -586,6 +606,7 @@ Deploy vervolgens de dev-omgeving met het object-ID van de groep. De Bicep-param
 
 ```bash
 az deployment sub create \
+  --name asr-dev \
   --location westeurope \
   --template-file main.bicep \
   --parameters main.parameters.dev.bicepparam \

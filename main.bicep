@@ -37,14 +37,15 @@ param deployStagingSlot bool = true
 var locationShort = 'we'
 var normalizedApplicationName = toLower(applicationName)
 var suffix = 'asr-${normalizedApplicationName}-${environment}-${locationShort}-001'
+var globalUniqueSuffix = uniqueString(subscription().id)
 
 var resourceGroupName = 'rg-${suffix}'
 var vnetName = 'vnet-${suffix}'
 var logAnalyticsName = 'log-${suffix}'
 var appInsightsName = 'appi-${suffix}'
 var appServicePlanName = 'asp-${suffix}'
-var webAppName = 'app-${suffix}'
-var storageAccountName = 'st${normalizedApplicationName}${environment}${locationShort}001'
+var webAppName = 'app-${suffix}-${globalUniqueSuffix}'
+var storageAccountName = 'st${normalizedApplicationName}${environment}${globalUniqueSuffix}'
 
 var tags = {
   application: normalizedApplicationName
