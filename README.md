@@ -212,7 +212,23 @@ az deployment operation sub list \
 
 Voer dit controlecommando eventueel na enkele minuten opnieuw uit. De oorspronkelijke Cloud Shell-sessie blijft de deployment uitvoeren.
 
-#### B1.4 Deploy Eventueel Test Of Prod
+> **Deployment mislukt?** Voer vóór een nieuwe poging altijd `./scripts/cleanup.sh` uit en wacht op de melding dat de cleanup is voltooid. Een mislukte deployment kan gedeeltelijk aangemaakte resources achterlaten, zoals een Private DNS-link. Opnieuw deployen zonder cleanup kan daardoor een conflict veroorzaken.
+
+#### B1.4 Controleer De Deployment In De Azure Portal
+
+Voer na een geslaagde deployment een visuele controle uit:
+
+1. Minimaliseer Cloud Shell zodat de Azure Portal weer volledig zichtbaar is.
+2. Zoek bovenin de portal naar **Resource groups**.
+3. Open de resourcegroep `rg-asr-asrdm-dev-we-001`.
+4. Bekijk op de pagina **Overview** de lijst met uitgerolde resources.
+5. Controleer dat je onder andere een Virtual Network, Network Security Groups, Log Analytics Workspace, Application Insights, App Service Plan, Web App, Storage Account, Private Endpoint en Private DNS Zone ziet.
+6. Open in het linkermenu **Deployments** en controleer dat de moduledeployments, waaronder `monitoring-dev`, `network-dev`, `storage-dev` en `webapp-dev`, de status **Succeeded** hebben.
+7. Ga terug naar **Overview** en open eventueel de Web App of Storage Account om de automatisch gegenereerde naam te bekijken.
+
+De Web App en Storage Account bevatten een unieke suffix. Daardoor kunnen meerdere cursisten dezelfde template gebruiken zonder dat hun wereldwijd unieke resourcenamen botsen.
+
+#### B1.5 Deploy Eventueel Test Of Prod
 
 Deploy test of prod door het parameterbestand te wisselen:
 
