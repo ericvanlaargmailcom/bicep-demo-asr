@@ -222,15 +222,7 @@ az login
 
 Verschijnt in de browser een pop-up waarin je het accounttype moet kiezen, selecteer dan **Werk- of schoolaccount**. Kies niet voor een persoonlijk Microsoft-account; het Global Administrator-account hoort bij Microsoft Entra ID van de Virsoft-tenant.
 
-#### B1.3 Gebruik Eventueel Een Device Code
-
-Als de browserlogin op de labpc niet werkt, gebruik dan:
-
-```bash
-az login --use-device-code
-```
-
-#### B1.4 Controleer Tenant En Subscription
+#### B1.3 Controleer Tenant En Subscription
 
 Controleer na het aanmelden welke tenant en subscription actief zijn:
 
@@ -240,7 +232,7 @@ az account show --output table
 
 Ga pas verder wanneer `az account show` de juiste tenant en subscription toont.
 
-#### B1.5 Valideer De Bicep-template
+#### B1.4 Valideer De Bicep-template
 
 Valideer of de Bicep compileert. Bij een geldige template verschijnt een compacte JSON-bevestiging; bij een fout toont de Bicep-compiler de foutmelding en geeft het commando een mislukte exitcode terug:
 
@@ -259,7 +251,7 @@ Wil je ook de volledige gegenereerde ARM-template als JSON bekijken, gebruik dan
 az bicep build --file main.bicep --stdout
 ```
 
-#### B1.6 Deploy De Dev-omgeving
+#### B1.5 Deploy De Dev-omgeving
 
 Deploy de dev-omgeving:
 
@@ -270,7 +262,7 @@ az deployment sub create \
   --parameters main.parameters.dev.bicepparam
 ```
 
-#### B1.7 Deploy Eventueel Test Of Prod
+#### B1.6 Deploy Eventueel Test Of Prod
 
 Deploy test of prod door het parameterbestand te wisselen:
 
