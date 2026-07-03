@@ -317,6 +317,17 @@ az deployment sub what-if \
 
 Zoek in de uitvoer naar het Web App-slot `staging`. Het ontbrekende slot en de bijbehorende diagnostic settings worden als `Create` weergegeven. `What-if` verandert zelf nog niets.
 
+Het is normaal dat de samenvatting meer wijzigingen toont dan de ene handmatige actie die je hebt uitgevoerd. Eén deployment slot bestaat in deze template uit twee afzonderlijke Azure-resources: het slot zelf en de diagnostic settings die eraan gekoppeld zijn. Na het verwijderen van het slot kan de samenvatting daarom bijvoorbeeld `2 to create` tonen.
+
+Lees de categorieën als volgt:
+
+- **Create:** de resource staat in Bicep, maar ontbreekt in Azure. In deze oefening zijn dit het `staging`-slot en de bijbehorende diagnostic settings.
+- **Modify:** Azure verwacht een verschil in één of meer eigenschappen. Een deel hiervan kan What-If-ruis zijn, bijvoorbeeld doordat Azure standaardwaarden toevoegt of doordat waarden uit module-outputs en resource-referenties pas tijdens de echte deployment kunnen worden berekend. Controleer daarom de getoonde eigenschappen; een `Modify` betekent niet automatisch dat iemand die resource handmatig heeft aangepast.
+- **NoChange:** de resource staat in Bicep en komt al overeen met de actuele Azure-configuratie.
+- **Ignore:** de resource bestaat in Azure, maar maakt geen deel uit van deze deployment. Omdat dit een incrementele deployment is, laat Azure deze resource ongemoeid.
+
+De precieze aantallen kunnen per subscription en moment verschillen. Voor deze drift-oefening is vooral belangrijk dat het slot en zijn diagnostic settings onder **Create** staan. Dat bewijst dat Bicep de ontbrekende gewenste configuratie heeft gedetecteerd.
+
 #### B2.5 Herstel Het Slot Met Bicep
 
 Herstel daarna de gedeclareerde omgeving met dezelfde Bicep-deployment:
@@ -471,7 +482,18 @@ az stack sub create \
 
 #### B5.6 Controleer De Stack En Resources
 
-Bekijk de stack en zijn beheerde resources:
+Voer na het aanmaken van de stack eerst een visuele controle uit in de Azure Portal:
+
+1. Minimaliseer Cloud Shell zodat de Azure Portal weer volledig zichtbaar is.
+2. Zoek bovenin de portal naar **Deployment stacks** en open deze dienst.
+3. Selecteer de cursus-subscription en open de stack `stack-asr-asrdm-dev-we-001`.
+4. Controleer op **Overview** dat de provisioningstatus **Succeeded** is.
+5. Open **Managed resources** en controleer dat de stack de resourcegroep en de daarin uitgerolde resources beheert.
+6. Zoek daarna naar **Resource groups** en open `rg-asr-asrdm-dev-we-001`.
+7. Bekijk op **Overview** opnieuw de uitgerolde resources en controleer dat onder andere het Virtual Network, de Web App, het Storage Account en de monitoringresources aanwezig zijn.
+8. Open in het linkermenu **Deployments** en controleer dat de moduledeployments de status **Succeeded** hebben.
+
+Bekijk vervolgens vanuit Cloud Shell de stack en zijn beheerde resources:
 
 ```bash
 az stack sub show \
