@@ -750,9 +750,21 @@ Open daarna de modules:
 - `modules/webapp/webApp.bicep`: gestandaardiseerde PHP applicatieruntime met managed identity, HTTPS only, Application Insights en een `staging` slot voor CI/CD.
 - `modules/security/roleAssignments.bicep`: klein voorbeeld van uitbreidbare governance op resource group scope.
 
-### C3. Leg De Kernboodschap Uit
+### C3. Herken De Kernboodschap
 
-De kernboodschap: teams hoeven niet telkens opnieuw securitykeuzes te maken. Ze consumeren goedgekeurde modules, vullen parameters in en krijgen dezelfde veilige baseline voor dev, test en prod.
+Je hebt nu gezien dat `main.bicep` de infrastructuur niet volledig zelf beschrijft, maar een aantal herbruikbare bouwblokken samenvoegt. Een platformteam kan deze modules centraal ontwikkelen, testen en goedkeuren. Security-instellingen, naming, tags, monitoring en netwerkkeuzes worden daarmee één keer in de modules vastgelegd.
+
+Dit sluit aan bij het doel van een Azure Solution Review. Een review gaat niet alleen over de vraag of een losse resource technisch werkt, maar ook over de vraag of de volledige oplossing voldoet aan de afgesproken architectuurprincipes. Denk aan veilige netwerktoegang, centrale logging, consistente tags, herkenbare resourcenamen en het uitschakelen van onnodige publieke toegang. Door deze keuzes in herbruikbare modules vast te leggen, worden reviewafspraken onderdeel van de uitvoerbare infrastructuurcode.
+
+Een applicatieteam hoeft die keuzes vervolgens niet voor iedere omgeving of applicatie opnieuw te maken. Het team gebruikt de goedgekeurde modules en levert alleen de waarden aan die werkelijk per workload of omgeving verschillen. In deze demo zijn dat bijvoorbeeld de omgevingsnaam, applicatienaam, eigenaar en kostenplaats. Daardoor ontstaat in dev, test en prod dezelfde veilige en herkenbare basis, terwijl bewuste configuratieverschillen expliciet in de parameterbestanden blijven staan.
+
+Deze scheiding maakt ook de verantwoordelijkheden duidelijker. Het platformteam beheert de kwaliteit van de bouwblokken en bepaalt welke technische standaard daarin wordt afgedwongen. Het applicatieteam combineert die bouwblokken in `main.bicep` en vult de workloadspecifieke parameters in. Een ontwikkelaar hoeft daardoor niet voor iedere deployment opnieuw uit te zoeken hoe diagnostic settings, private endpoints, managed identities of securityinstellingen moeten worden geconfigureerd.
+
+Wanneer de organisatie later een standaard wil verbeteren, hoeft die wijziging niet handmatig in iedere afzonderlijke template te worden gekopieerd. Het platformteam kan de gedeelde module aanpassen, testen en als nieuwe versie beschikbaar stellen. Applicatieteams kunnen die verbetering vervolgens gecontroleerd overnemen. Dat verkleint de kans op copy-pastefouten en voorkomt dat tientallen bijna gelijke templates langzaam van elkaar gaan afwijken.
+
+De parameterbestanden en deployments maken bovendien zichtbaar welke standaard in welke omgeving is toegepast. Wijzigingen kunnen via Git worden gereviewd en de deploymenthistorie in Azure laat zien wanneer de infrastructuur is uitgerold. What-If helpt vooraf om verschillen te beoordelen en Deployment Stacks voegen ownership en lifecyclebeheer toe voor resources die later uit de gewenste configuratie verdwijnen.
+
+De winst zit dus niet alleen in minder Bicep-code schrijven. Herbruikbare modules vertalen architectuurafspraken naar een herhaalbare technische standaard. Ze maken de veilige werkwijze de eenvoudige standaardroute voor teams en zorgen dat verbeteringen centraal, gecontroleerd en aantoonbaar kunnen worden doorgevoerd.
 
 ### C4. Bespreek CI/CD En Deployment Slots
 
