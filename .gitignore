@@ -1,3 +1,4 @@
 *.jsonc
 main.json
+!learning-path/arm-vm/main.json
 main.parameters.*.json

@@ -5,6 +5,12 @@ application_name="${1:-asrdm}"
 location_short="we"
 environments=(dev test prod)
 resource_groups=()
+resource_group_candidates=(
+  "rg-leerlijn-portal-we-001"
+  "rg-leerlijn-cli-we-001"
+  "rg-leerlijn-arm-we-001"
+  "rg-leerlijn-bicep-we-001"
+)
 
 echo "Checking deployment stacks..."
 
@@ -25,11 +31,13 @@ for environment in "${environments[@]}"; do
   fi
 done
 
+for environment in "${environments[@]}"; do
+  resource_group_candidates+=("rg-asr-${application_name}-${environment}-${location_short}-001")
+done
+
 echo "Checking resource groups..."
 
-for environment in "${environments[@]}"; do
-  resource_group_name="rg-asr-${application_name}-${environment}-${location_short}-001"
-
+for resource_group_name in "${resource_group_candidates[@]}"; do
   if [[ "$(az group exists --name "${resource_group_name}")" == "true" ]]; then
     echo "Starting deletion: ${resource_group_name}"
     az group delete \
@@ -73,7 +81,7 @@ remaining_stacks="$(az stack sub list \
   --query "[?starts_with(name, 'stack-asr-${application_name}-')].name" \
   --output tsv)"
 remaining_resource_groups="$(az group list \
-  --query "[?starts_with(name, 'rg-asr-${application_name}-')].name" \
+  --query "[?starts_with(name, 'rg-asr-${application_name}-') || starts_with(name, 'rg-leerlijn-')].name" \
   --output tsv)"
 
 if [[ -n "${remaining_stacks}" || -n "${remaining_resource_groups}" ]]; then
@@ -92,4 +100,4 @@ if [[ -n "${remaining_stacks}" || -n "${remaining_resource_groups}" ]]; then
   exit 1
 fi
 
-echo "Cleanup completed. No matching dev, test or prod stacks or resource groups remain."
+echo "Cleanup completed. No matching learning-path or final-demo resources remain."

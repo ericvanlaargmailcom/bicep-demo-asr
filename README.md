@@ -1,12 +1,430 @@
-# Secure Azure Landing Zone Demo
+# Azure Deployment Leerlijn: Van Portal Naar Herbruikbare Bicep-modules
 
-Deze repository bevat een compacte klantdemo voor ASR over herbruikbare Azure Bicep modules. De demo laat zien hoe je met een klein aantal gestandaardiseerde modules snel een veilige applicatieomgeving kunt uitrollen met consistente naming, tags, monitoring en private connectivity.
+In deze leerlijn bouw je Azure-infrastructuur vijf keer op een steeds beter automatiseerbare manier. Je begint visueel in de Azure Portal, voert daarna dezelfde soort handelingen uit met Azure CLI, stapt vervolgens over op een declaratieve ARM-template en herschrijft dat concept in Bicep. Tot slot gebruik je de volledige demo uit deze repository om herbruikbare modules, What-If, drift, Deployment Stacks en RBAC als code te onderzoeken.
 
-De insteek is bewust compact: geen enterprise landing zone met tientallen lagen, maar een realistische mini-landing-zone die in 20 tot 30 minuten goed uit te leggen is.
+Je hebt voor de volledige leerlijn alleen deze README, een moderne browser en toegang tot de cursus-subscription nodig. Installeer lokaal geen Visual Studio Code, Git, Bicep, Azure CLI of Azure PowerShell. Vanaf **P2** gebruik je de vooraf geïnstalleerde hulpmiddelen in Azure Cloud Shell.
 
-> **Let op: deze demo veroorzaakt werkelijke Azure-kosten.** Elke omgeving bevat onder andere een betaald `P1v3` App Service Plan. Dev, test en prod samen betekenen drie betaalde plannen. Ben je klaar met oefenen of neem je een langere pauze? Voer dan direct `./scripts/cleanup.sh` uit en controleer dat er niets is achtergebleven.
+## De Didactische Opbouw
 
-## Doel Van De Demo
+| Fase | Werkwijze | Wat je leert | Beperking die je ervaart |
+|---|---|---|---|
+| **P1** | Azure Portal | Resources en afhankelijkheden visueel herkennen. | Handmatige stappen zijn lastig exact te herhalen. |
+| **P2** | Azure CLI | Azure imperatief en scriptbaar aansturen. | Je beschrijft losse acties in plaats van één gewenste eindtoestand. |
+| **P3** | ARM JSON-template | Infrastructuur declaratief en herhaalbaar vastleggen. | Kale JSON is uitgebreid en lastig leesbaar. |
+| **P4** | Bicep-template | Dezelfde ARM-engine met compacte syntax en typecontrole gebruiken. | Eén groot bestand is nog niet automatisch een organisatiebrede standaard. |
+| **A–E** | Herbruikbare Bicep-modules | Security-by-default, parameters, drift, ownership, lifecyclebeheer en governance toepassen. | Je ziet waar platformstandaarden en applicatieverantwoordelijkheid elkaar raken. |
+
+Iedere fase lost bewust een probleem van de vorige fase op. Bicep verschijnt daardoor niet als zomaar een nieuwe taal, maar als een logisch vervolg op ervaringen die je eerder in de leerlijn hebt opgedaan.
+
+De letter **P** staat voor *voortraject*. Gebruik bij vragen steeds de volledige stapcode, bijvoorbeeld: “Ik ben bij P3.4”. Vanaf de einddemo gebruik je de bestaande codes A1, B1.3, B5.6 enzovoort. De oefeningen wisselen tussen Windows- en Linux-VM's omdat ze verschillende officiële quickstarts combineren; het leerdoel is het verschil tussen de deploymentmethoden, niet het verschil tussen de besturingssystemen.
+
+> **Let op: deze leerlijn veroorzaakt werkelijke Azure-kosten.** Verwijder de oefen-resourcegroep aan het einde van iedere P-fase. De einddemo bevat betaalde `P1v3` App Service Plans. Virsoft ruimt de cursus-subscription na maximaal zes uur automatisch op, maar wacht daar tijdens het oefenen niet onnodig op.
+
+## P0. Eenmalige Voorbereiding
+
+### P0.1 Meld Je Aan En Activeer MFA
+
+1. Open [portal.azure.com](https://portal.azure.com) in de browser.
+2. Meld je aan met het Global Administrator-account van de eigen Virsoft-tenant. Kies **Werk- of schoolaccount** wanneer Microsoft om het accounttype vraagt.
+3. Kies **Volgende** wanneer de melding verschijnt dat meer informatie vereist is.
+4. Installeer **Microsoft Authenticator** op je smartphone als deze app nog niet is geïnstalleerd.
+5. Open Microsoft Authenticator, sta meldingen en cameratoegang toe wanneer daarom wordt gevraagd en kies het plus-teken gevolgd door **Werk- of schoolaccount > QR-code scannen**.
+6. Scan met de app de QR-code die in de browser wordt getoond.
+7. Keur de testmelding in Microsoft Authenticator goed en rond alle resterende stappen in de browser af.
+8. Controleer dat de Azure Portal opent voordat je verdergaat.
+
+Verschijnt de registratiewizard niet automatisch, open dan [Beveiligingsgegevens](https://mysignins.microsoft.com/security-info), kies **Aanmeldingsmethode toevoegen** en selecteer **Microsoft Authenticator**.
+
+### P0.2 Controleer De Cursus-subscription
+
+1. Zoek in de Azure Portal naar **Subscriptions**.
+2. Open de cursus-subscription.
+3. Controleer bij **Overview** dat de subscription actief is.
+4. Controleer rechtsboven dat je met het cursusaccount in de juiste tenant bent aangemeld.
+
+Gebruik in alle volgende fasen uitsluitend deze cursus-subscription.
+
+## P1. Deploy Een Windows-VM Via De Azure Portal
+
+In deze eerste fase werk je volledig visueel. Je ziet welke keuzes nodig zijn om een VM te maken en welke ondersteunende resources Azure daarbij aanmaakt. De oefening is gebaseerd op de [Microsoft-quickstart voor een Windows-VM in de Azure Portal](https://learn.microsoft.com/azure/virtual-machines/windows/quick-create-portal).
+
+### P1.1 Maak De Virtuele Machine
+
+1. Zoek in de Azure Portal naar **Virtual machines**.
+2. Kies **Create > Azure virtual machine**.
+3. Controleer dat de cursus-subscription is geselecteerd.
+4. Kies **Create new** bij **Resource group** en gebruik `rg-leerlijn-portal-we-001`.
+5. Gebruik als **Virtual machine name** `vmportal001`. Een Windows-computernaam mag maximaal 15 tekens bevatten.
+6. Kies **West Europe** als regio.
+7. Kies **Windows Server 2022 Datacenter: Azure Edition - x64 Gen 2** als image.
+8. Kies indien beschikbaar `Standard_B2s` als VM-grootte.
+9. Gebruik `azureuser` als gebruikersnaam en stel een tijdelijk sterk wachtwoord in. Bewaar dit alleen zolang deze oefening duurt.
+10. Kies bij **Public inbound ports** voor **Allow selected ports** en selecteer **RDP (3389)** en **HTTP (80)**.
+11. Open het tabblad **Management**, schakel **Auto-shutdown** in en kies een tijdstip later op dezelfde cursusdag.
+12. Kies **Review + create**, controleer de samenvatting en wacht op de validatie.
+13. Kies **Create** en wacht totdat de deployment is voltooid.
+14. Kies **Go to resource**.
+
+> De open poorten en het tijdelijke wachtwoord zijn alleen bedoeld voor deze afgeschermde cursus-oefening. Dit is geen productieontwerp.
+
+### P1.2 Onderzoek Wat De Portal Heeft Aangemaakt
+
+1. Bekijk op **Overview** de status, regio, VM-grootte, private IP en public IP.
+2. Open de resourcegroep `rg-leerlijn-portal-we-001`.
+3. Controleer dat Azure naast de VM ook een disk, netwerkinterface, public IP, Network Security Group en Virtual Network heeft aangemaakt.
+4. Open **Deployments** en bekijk de deployment die door de portal is uitgevoerd.
+
+De portal vroeg vooral om functionele keuzes. Veel resourcenamen, afhankelijkheden en standaardinstellingen werden automatisch voor je ingevuld. Dat is snel en overzichtelijk, maar de exacte reeks muisklikken is niet vanzelf reproduceerbaar.
+
+### P1.3 Test De VM Optioneel Via RDP
+
+Voer deze stap alleen uit wanneer RDP op de lab-pc is toegestaan:
+
+1. Open de VM en kies **Connect > Connect via RDP**.
+2. Controleer met **Check access** dat poort 3389 bereikbaar is.
+3. Download en open het RDP-bestand.
+4. Meld je aan met `azureuser` en het tijdelijke wachtwoord.
+5. Accepteer de certificaatwaarschuwing voor deze tijdelijke oefen-VM.
+6. Open PowerShell in de VM en installeer IIS:
+
+```powershell
+Install-WindowsFeature -Name Web-Server -IncludeManagementTools
+```
+
+Sluit daarna de RDP-sessie. Open het public IP-adres van de VM in een browser en controleer of de IIS-welkomstpagina verschijnt.
+
+### P1.4 Verwijder De Portal-resources
+
+1. Open `rg-leerlijn-portal-we-001`.
+2. Kies **Delete resource group**.
+3. Volg de bevestigingsstappen in de portal.
+4. Wacht totdat de resourcegroep niet meer bestaat.
+
+Je verwijdert bewust de volledige resourcegroep. Daarmee verdwijnen ook alle ondersteunende resources die de portal voor de VM heeft aangemaakt.
+
+## P2. Deploy Een Linux-VM Met Azure CLI
+
+Je gaat nu vergelijkbare infrastructuur maken met commando's. De stappen zijn daardoor beter te herhalen en in een script op te nemen. De oefening is gebaseerd op de [Microsoft-quickstart voor een Linux-VM met Azure CLI](https://learn.microsoft.com/azure/virtual-machines/linux/quick-create-cli).
+
+### P2.1 Start Azure Cloud Shell Met Bash
+
+1. Klik rechtsboven in de Azure Portal op het pictogram **Cloud Shell** (`>_`).
+2. Kies **Bash** wanneer naar het shelltype wordt gevraagd.
+3. Kies bij de eerste start **No storage account required** voor een tijdelijke sessie.
+4. Selecteer de cursus-subscription en kies **Apply**.
+5. Wacht totdat de Bash-prompt verschijnt.
+
+Cloud Shell is al aangemeld met de portalsessie. Voer daarom geen afzonderlijk `az login`-commando uit.
+
+### P2.2 Controleer De CLI-context
+
+```bash
+az version
+az account show --output table
+```
+
+Ga pas verder wanneer de juiste tenant en cursus-subscription worden getoond.
+
+### P2.3 Stel De Variabelen In
+
+```bash
+CLI_RESOURCE_GROUP="rg-leerlijn-cli-we-001"
+CLI_VM_NAME="vm-leerlijn-cli-we-001"
+CLI_LOCATION="westeurope"
+CLI_USERNAME="azureuser"
+```
+
+Variabelen maken het commando herbruikbaar zonder iedere waarde op meerdere plaatsen te wijzigen.
+
+### P2.4 Maak De Resourcegroep En VM
+
+```bash
+az group create \
+  --name "$CLI_RESOURCE_GROUP" \
+  --location "$CLI_LOCATION" \
+  --output table
+
+az vm create \
+  --resource-group "$CLI_RESOURCE_GROUP" \
+  --name "$CLI_VM_NAME" \
+  --image "Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:latest" \
+  --size Standard_B2s \
+  --admin-username "$CLI_USERNAME" \
+  --assign-identity \
+  --generate-ssh-keys \
+  --public-ip-sku Standard \
+  --output table
+```
+
+`--generate-ssh-keys` gebruikt een bestaande sleutel uit `~/.ssh` of maakt daar een nieuwe sleutel. Het commando maakt niet alleen de VM, maar laat Azure CLI ook de benodigde netwerkresources samenstellen.
+
+### P2.5 Controleer De Deployment
+
+```bash
+az vm show \
+  --resource-group "$CLI_RESOURCE_GROUP" \
+  --name "$CLI_VM_NAME" \
+  --show-details \
+  --query "{name:name,powerState:powerState,privateIp:privateIps,publicIp:publicIps}" \
+  --output table
+
+az resource list \
+  --resource-group "$CLI_RESOURCE_GROUP" \
+  --query "[].{name:name,type:type}" \
+  --output table
+```
+
+Vergelijk de resourcelijst met P1. Je hebt opnieuw een VM en ondersteunende resources gekregen, maar deze keer beschreef je handelingen: maak eerst een resourcegroep en voer daarna `az vm create` uit.
+
+Test SSH eventueel rechtstreeks vanuit Cloud Shell:
+
+```bash
+CLI_PUBLIC_IP=$(az vm show \
+  --resource-group "$CLI_RESOURCE_GROUP" \
+  --name "$CLI_VM_NAME" \
+  --show-details \
+  --query publicIps \
+  --output tsv)
+
+ssh -o StrictHostKeyChecking=no "$CLI_USERNAME@$CLI_PUBLIC_IP"
+```
+
+Gebruik `exit` om de SSH-sessie weer te verlaten.
+
+### P2.6 Verwijder De CLI-resources
+
+```bash
+az group delete \
+  --name "$CLI_RESOURCE_GROUP" \
+  --yes
+
+az group exists --name "$CLI_RESOURCE_GROUP"
+```
+
+De verwachte laatste uitvoer is `false`. Voer het controlecommando na enkele minuten opnieuw uit wanneer de verwijdering nog loopt.
+
+### P2.7 Clone Deze Repository
+
+De volgende fasen gebruiken voorbeeldbestanden uit deze publieke repository:
+
+```bash
+cd ~
+
+if [ -d bicep-demo-asr/.git ]; then
+  git -C bicep-demo-asr pull --ff-only
+else
+  git clone https://github.com/ericvanlaargmailcom/bicep-demo-asr.git
+fi
+
+cd bicep-demo-asr
+```
+
+Voor het klonen is geen GitHub-account nodig. Omdat Cloud Shell tijdelijk is, moet je na een beëindigde sessie de repository opnieuw clonen.
+
+## P3. Deploy Een Windows-VM Met Een Kale ARM-template
+
+Azure CLI maakte in P2 meerdere resources voor je op basis van één hoog-niveaucommando. In deze fase leg je de gewenste resources en afhankelijkheden zelf declaratief vast in JSON. De oefening bouwt voort op de [Microsoft-instructie voor een Windows-VM met een ARM-template](https://learn.microsoft.com/azure/virtual-machines/windows/ps-template).
+
+### P3.1 Schakel Cloud Shell Over Naar PowerShell
+
+1. Gebruik in de Cloud Shell-werkbalk **Switch to PowerShell**.
+2. Wacht op de PowerShell-prompt.
+3. Ga terug naar de repository:
+
+```powershell
+Set-Location ~/bicep-demo-asr
+Get-AzContext
+```
+
+Controleer dat `Get-AzContext` de cursus-subscription toont.
+
+### P3.2 Bekijk De ARM-template
+
+Open de kale JSON-template:
+
+```powershell
+code learning-path/arm-vm/main.json
+```
+
+Zoek in het bestand naar:
+
+- `parameters`: waarden die bij een deployment kunnen verschillen;
+- `variables`: intern hergebruikte namen;
+- `resources`: de NSG, VNet, public IP, NIC en Windows-VM;
+- `dependsOn`: expliciete volgorde tussen resources;
+- ARM-expressies zoals `[parameters('vmName')]` en `[resourceId(...)]`;
+- `outputs`: waarden die na de deployment worden teruggegeven.
+
+De template is herhaalbaar en beschrijft de gewenste eindtoestand, maar de vele accolades, komma's, geneste properties en stringexpressies maken het bestand moeilijker te lezen en onderhouden.
+
+### P3.3 Maak De Resourcegroep En Valideer De Template
+
+```powershell
+$ArmResourceGroup = 'rg-leerlijn-arm-we-001'
+$ArmLocation = 'westeurope'
+$ArmAdminPassword = Read-Host 'Kies een tijdelijk sterk VM-wachtwoord' -AsSecureString
+
+New-AzResourceGroup `
+  -Name $ArmResourceGroup `
+  -Location $ArmLocation
+
+Test-AzResourceGroupDeployment `
+  -ResourceGroupName $ArmResourceGroup `
+  -TemplateFile './learning-path/arm-vm/main.json' `
+  -adminPassword $ArmAdminPassword
+```
+
+`Test-AzResourceGroupDeployment` controleert de template en parameters zonder resources te maken.
+
+### P3.4 Deploy De ARM-template
+
+```powershell
+New-AzResourceGroupDeployment `
+  -Name 'arm-vm' `
+  -ResourceGroupName $ArmResourceGroup `
+  -TemplateFile './learning-path/arm-vm/main.json' `
+  -adminPassword $ArmAdminPassword `
+  -Verbose
+```
+
+Wis de wachtwoordvariabele zodra de deployment is gestart:
+
+```powershell
+$ArmAdminPassword = $null
+```
+
+### P3.5 Controleer De ARM-deployment
+
+```powershell
+Get-AzResourceGroupDeployment `
+  -ResourceGroupName $ArmResourceGroup `
+  -Name 'arm-vm'
+
+Get-AzResource `
+  -ResourceGroupName $ArmResourceGroup |
+  Select-Object Name, ResourceType
+```
+
+Open daarnaast in de Azure Portal de resourcegroep `rg-leerlijn-arm-we-001`, bekijk de resources en controleer onder **Deployments** dat `arm-vm` is geslaagd.
+
+### P3.6 Verwijder De ARM-resources En Keer Terug Naar Bash
+
+```powershell
+Remove-AzResourceGroup `
+  -Name $ArmResourceGroup `
+  -Force
+```
+
+1. Wacht totdat de resourcegroep is verwijderd.
+2. Gebruik **Switch to Bash** in de Cloud Shell-werkbalk.
+3. Ga terug naar de repository:
+
+```bash
+cd ~/bicep-demo-asr
+```
+
+## P4. Deploy Een Linux-VM Met Bicep
+
+Bicep gebruikt dezelfde Azure Resource Manager-engine als de JSON-template uit P3. Het verschil zit vooral in de schrijfervaring: compacte declaraties, typecontrole, symbolische namen en automatisch afgeleide afhankelijkheden. De oefening is gebaseerd op de [Microsoft-quickstart voor een Linux-VM met Bicep](https://learn.microsoft.com/azure/virtual-machines/linux/quick-create-bicep?tabs=CLI).
+
+### P4.1 Bekijk De Bicep-template
+
+```bash
+code learning-path/bicep-vm/main.bicep
+```
+
+Vergelijk het bestand met `learning-path/arm-vm/main.json` en let op:
+
+- resources hebben symbolische namen zoals `nsg`, `vnet`, `publicIp`, `nic` en `vm`;
+- propertywaarden worden zonder JSON-stringexpressies aan elkaar gekoppeld;
+- verwijzingen zoals `nsg.id` en `nic.id` maken afhankelijkheden duidelijk;
+- er is meestal geen expliciete `dependsOn` nodig wanneer Bicep de afhankelijkheid uit een verwijzing kan afleiden;
+- parameters, variabelen en outputs zijn compacter maar leveren uiteindelijk een ARM-template op.
+
+### P4.2 Controleer De Bicep-hulpmiddelen En SSH-sleutel
+
+```bash
+bicep --version
+
+if [ ! -f ~/.ssh/id_rsa.pub ]; then
+  ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N ""
+fi
+
+bicep build learning-path/bicep-vm/main.bicep --stdout > /dev/null
+printf 'Bicep-template is geldig.\n'
+```
+
+De compiler controleert onder andere syntax, typen en beschikbare properties voordat Azure de deployment ontvangt.
+
+### P4.3 Maak De Resourcegroep En Deploy Bicep
+
+```bash
+BICEP_RESOURCE_GROUP="rg-leerlijn-bicep-we-001"
+
+az group create \
+  --name "$BICEP_RESOURCE_GROUP" \
+  --location westeurope \
+  --output table
+
+az deployment group create \
+  --name bicep-vm \
+  --resource-group "$BICEP_RESOURCE_GROUP" \
+  --template-file learning-path/bicep-vm/main.bicep \
+  --parameters adminPublicKey="$(cat ~/.ssh/id_rsa.pub)" \
+  --output json
+```
+
+Azure ontvangt hierbij geen Bicep-broncode. De Bicep-compiler zet het bestand eerst om naar een ARM-template en Azure Resource Manager voert die gegenereerde template uit.
+
+### P4.4 Controleer De Bicep-deployment
+
+```bash
+az deployment group show \
+  --name bicep-vm \
+  --resource-group "$BICEP_RESOURCE_GROUP" \
+  --query "{state:properties.provisioningState,outputs:properties.outputs}" \
+  --output json
+
+az resource list \
+  --resource-group "$BICEP_RESOURCE_GROUP" \
+  --query "[].{name:name,type:type}" \
+  --output table
+```
+
+Open ook de resourcegroep in de Azure Portal. De resourcetypen lijken sterk op P2 en P3, maar de gewenste configuratie staat nu leesbaar en reproduceerbaar in één Bicep-bestand.
+
+### P4.5 Verwijder De Bicep-VM
+
+```bash
+az group delete \
+  --name "$BICEP_RESOURCE_GROUP" \
+  --yes
+
+az group exists --name "$BICEP_RESOURCE_GROUP"
+```
+
+Wacht totdat de laatste uitvoer `false` is.
+
+### P4.6 Maak De Balans Op
+
+| Onderwerp | Portal | Azure CLI | ARM JSON | Bicep |
+|---|---|---|---|---|
+| Visueel ontdekken | Sterk | Beperkt | Beperkt | Beperkt |
+| Exact herhaalbaar | Moeilijk | Redelijk | Ja | Ja |
+| Beschrijft gewenste toestand | Nee | Meestal niet | Ja | Ja |
+| Leesbaarheid bij meerdere resources | Niet van toepassing | Verspreide commando's | Laag | Hoog |
+| Parameters en outputs | Via formulieren | Via argumenten en queries | Ja | Ja |
+| Herbruikbare modules | Nee | Alleen via eigen scripts | Mogelijk, maar uitgebreid | Ja, compact en typeveilig |
+
+Je hebt nu de basis van Bicep ervaren. In de einddemo ga je van één Bicep-bestand naar een realistische oplossing met herbruikbare modules, omgevingsparameters, security-by-default, driftcontrole en lifecyclebeheer.
+
+## Einddemo: Secure Azure Landing Zone Met Herbruikbare Bicep-modules
+
+Deze repository bevat een compacte ASR-demo over herbruikbare Azure Bicep-modules. De demo laat zien hoe je met een klein aantal gestandaardiseerde modules snel een veilige applicatieomgeving uitrolt met consistente naming, tags, monitoring en private connectivity.
+
+De insteek is bewust compact: geen enterprise landing zone met tientallen lagen, maar een realistische mini-landing-zone waarin de principes duidelijk zichtbaar blijven.
+
+### Doel Van De Einddemo
 
 In deze demo ontdek je hoe een financiële organisatie security-by-default en herhaalbaarheid kan combineren:
 
@@ -16,7 +434,7 @@ In deze demo ontdek je hoe een financiële organisatie security-by-default en he
 - Governance is zichtbaar via verplichte tags voor applicatie, omgeving, eigenaar, cost center, beheerwijze en klant.
 - Publieke toegang staat uit voor dataresources; toegang loopt via private endpoints en private DNS.
 
-## Architectuur
+### Architectuur Van De Einddemo
 
 De demo rolt per omgeving een applicatie-resource-group uit:
 
@@ -37,7 +455,7 @@ De demo rolt per omgeving een applicatie-resource-group uit:
   - HTTPS only
   - minimum TLS 1.2
   - FTPS uitgeschakeld
-  - `staging` deployment slot voor CI/CD-demo's
+  - `staging` deployment slot
   - Application Insights configuratie
   - diagnostic settings naar Log Analytics
 - Storage account met:
@@ -51,7 +469,7 @@ De demo rolt per omgeving een applicatie-resource-group uit:
   - diagnostic settings naar Log Analytics
 - Optionele voorbeeld-role-assignment op resource group scope.
 
-## Folderstructuur
+### Folderstructuur
 
 ```text
 bicep-demo-asr/
@@ -60,6 +478,11 @@ bicep-demo-asr/
 ├─ main.parameters.dev.bicepparam
 ├─ main.parameters.test.bicepparam
 ├─ main.parameters.prod.bicepparam
+├─ learning-path/
+│  ├─ arm-vm/
+│  │  └─ main.json
+│  └─ bicep-vm/
+│     └─ main.bicep
 ├─ scripts/
 │  └─ cleanup.sh
 └─ modules/
@@ -75,7 +498,7 @@ bicep-demo-asr/
       └─ roleAssignments.bicep
 ```
 
-## Parameters
+### Parameters Van De Einddemo
 
 De hoofdtemplate gebruikt deze parameters:
 
@@ -92,63 +515,46 @@ De parameterbestanden gebruiken het Bicep-native `.bicepparam` formaat met dummy
 
 Web App- en Storage Account-namen moeten wereldwijd uniek zijn. De template voegt daarom automatisch een deterministische `uniqueString` op basis van de subscription-ID toe. Cursisten hoeven hiervoor geen eigen naam te bedenken.
 
-## A. Voorbereiding In Azure Portal En Cloud Shell
+## A. Bereid De Einddemo Voor
 
-Voor dit lab is op de Windows-labpc alleen een moderne browser met internettoegang nodig. Installeer lokaal geen Visual Studio Code, Git, Bicep of Azure CLI. Alle bestanden, Azure CLI-commando's en Bicep-commando's worden gebruikt vanuit **Azure Cloud Shell (Bash)** in de Azure Portal.
+Voer de einddemo uit in **Bash** vanuit de map `bicep-demo-asr`. Wanneer je P2 tot en met P4 in dezelfde Cloud Shell-sessie hebt uitgevoerd, staan de repository en hulpmiddelen al klaar.
 
-### A1. Meld Je Aan En Activeer MFA
+### A1. Controleer Of Herstel De Cloud Shell-sessie
 
-Voer deze eenmalige stap uit voordat je Cloud Shell start:
-
-1. Open [portal.azure.com](https://portal.azure.com) in de browser.
-2. Meld je aan met het Global Administrator-account van de eigen Virsoft-tenant. Kies **Werk- of schoolaccount** wanneer Microsoft om het accounttype vraagt.
-3. Kies **Volgende** wanneer de melding verschijnt dat meer informatie vereist is.
-4. Installeer **Microsoft Authenticator** op je smartphone als deze app nog niet is geïnstalleerd.
-5. Open Microsoft Authenticator, sta meldingen en cameratoegang toe wanneer daarom wordt gevraagd en kies het plus-teken gevolgd door **Werk- of schoolaccount > QR-code scannen**.
-6. Scan met de app de QR-code die in de browser wordt getoond.
-7. Keur de testmelding in Microsoft Authenticator goed en rond alle resterende stappen in de browser af.
-8. Controleer dat de Azure Portal opent voordat je verdergaat.
-
-Verschijnt de registratiewizard niet automatisch, open dan [Beveiligingsgegevens](https://mysignins.microsoft.com/security-info), kies **Aanmeldingsmethode toevoegen** en selecteer **Microsoft Authenticator**. Zie zo nodig de [officiële Microsoft-instructie voor het instellen van beveiligingsgegevens](https://support.microsoft.com/en-US/accounts-billing/work-school/set-up-security-info-from-a-sign-in-page).
-
-### A2. Start Azure Cloud Shell Met Bash
-
-1. Klik rechtsboven in de Azure Portal op het pictogram **Cloud Shell** (`>_`).
-2. Kies **Bash** wanneer naar het shelltype wordt gevraagd.
-3. Kies bij de eerste start **No storage account required** voor een tijdelijke sessie.
-4. Selecteer de eigen Azure-subscription en kies **Apply**.
-5. Wacht totdat de Bash-prompt verschijnt.
-
-Controleer de vooraf geïnstalleerde hulpmiddelen:
+Start Cloud Shell met **Bash** wanneer deze niet meer geopend is. Controleer daarna de hulpmiddelen en Azure-context:
 
 ```bash
 az version
 bicep --version
 git --version
+az account show --output table
 ```
 
-Cloud Shell is al aangemeld met de portalsessie. Voer daarom in dit lab geen afzonderlijk `az login`-commando uit.
+Cloud Shell is al aangemeld met de portalsessie. Voer daarom geen afzonderlijk `az login`-commando uit.
 
-### A3. Clone De GitHub-Repository In Cloud Shell
-
-Download de publieke repository in de tijdelijke Cloud Shell-sessie:
+### A2. Controleer Of Clone De Repository
 
 ```bash
-git clone https://github.com/ericvanlaargmailcom/bicep-demo-asr.git
+cd ~
+
+if [ -d bicep-demo-asr/.git ]; then
+  git -C bicep-demo-asr pull --ff-only
+else
+  git clone https://github.com/ericvanlaargmailcom/bicep-demo-asr.git
+fi
+
 cd bicep-demo-asr
 ```
 
-Voor het klonen is geen GitHub-account of aanmelding nodig. De bestanden bestaan alleen zolang de tijdelijke Cloud Shell-sessie bestaat. Start na een beëindigde sessie opnieuw bij **A2** en clone de repository opnieuw.
+Voor het klonen is geen GitHub-account nodig. De bestanden bestaan alleen zolang de tijdelijke Cloud Shell-sessie bestaat.
 
-### A4. Open De Cloud Shell-editor
-
-Open vanuit de projectmap de ingebouwde editor:
+### A3. Open De Cloud Shell-editor
 
 ```bash
 code .
 ```
 
-De Cloud Shell-editor bevat een bestandsverkenner en syntax highlighting. Gebruik de editor om `main.bicep`, de parameterbestanden en de modules te bekijken. Gebruik de Bash-terminal onder de editor voor alle deployment- en cleanupcommando's. Met ``Ctrl+` `` wissel je tussen de editor en de terminal.
+De Cloud Shell-editor bevat een bestandsverkenner en syntax highlighting. Gebruik de editor om `main.bicep`, de parameterbestanden en modules te bekijken. Gebruik de Bash-terminal onder de editor voor alle deployment- en cleanupcommando's. Met ``Ctrl+` `` wissel je tussen de editor en de terminal.
 
 ## B. Deployment Commands In Azure Cloud Shell
 
@@ -732,7 +1138,7 @@ az role assignment delete \
 az ad group delete --group "$GROUP_ID"
 ```
 
-> **Klaar met de oefeningen?** Voer nu `./scripts/cleanup.sh` uit. Hiermee verwijder je de bekende Deployment Stacks en de resourcegroepen van dev, test en prod.
+> **Klaar met de oefeningen?** Voer nu `./scripts/cleanup.sh` uit. Hiermee verwijder je de bekende Deployment Stacks, de resourcegroepen van dev, test en prod en eventuele achtergebleven resourcegroepen uit P1 tot en met P4.
 
 ## C. Wat Je Uit De Architectuur Kunt Afleiden
 
@@ -774,7 +1180,7 @@ Ben je klaar met ontdekken of neem je een langere pauze, voer dan altijd het cle
 ./scripts/cleanup.sh
 ```
 
-Het script verwijdert eerst bekende Deployment Stacks met `deleteAll`. Daarna verwijdert het eventuele resterende resourcegroepen van dev, test en prod parallel. Tot slot controleert het of er nog cursus-stacks of -resourcegroepen bestaan.
+Het script verwijdert eerst bekende Deployment Stacks met `deleteAll`. Daarna verwijdert het eventuele resterende resourcegroepen van dev, test en prod én de vaste oefen-resourcegroepen uit P1 tot en met P4 parallel. Tot slot controleert het of er nog cursus-stacks of -resourcegroepen bestaan.
 
 Voor een afwijkende `applicationName` geef je de naam als argument mee:
 
