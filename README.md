@@ -88,116 +88,13 @@ De hoofdtemplate gebruikt deze parameters:
 
 De parameterbestanden gebruiken het Bicep-native `.bicepparam` formaat met dummywaarden. Hoewel Azure de technische parameternaam `principalId` gebruikt, verwacht deze demo specifiek het object-ID van een **Entra ID-groep** en niet van een service principal, gebruiker of managed identity.
 
-## A. Voorbereiding Op Een Schone Windows-Labpc
+## A. Voorbereiding In Azure Portal En Cloud Shell
 
-De labpc heeft voor deze voorbereiding internettoegang nodig. Gebruik **PowerShell** voor de eerste installatie met Chocolatey, of gebruik de handmatige installers. Gebruik daarna **Git Bash** voor alle Bicep-, Git- en Azure CLI-commando's. Git Bash wordt automatisch met Git for Windows geïnstalleerd.
+Voor dit lab is op de Windows-labpc alleen een moderne browser met internettoegang nodig. Installeer lokaal geen Visual Studio Code, Git, Bicep of Azure CLI. Alle bestanden, Azure CLI-commando's en Bicep-commando's worden gebruikt vanuit **Azure Cloud Shell (Bash)** in de Azure Portal.
 
-### A1. Installeer Visual Studio Code, Git en Azure CLI
+### A1. Meld Je Aan En Activeer MFA
 
-Kies één van de onderstaande installatieroutes. Chocolatey is standaard aanwezig op de labpc's en is daarom de aanbevolen route. Gebruik de handmatige route wanneer Chocolatey niet werkt of door organisatiebeleid is geblokkeerd.
-
-#### Route A: Installatie Met Chocolatey
-
-Open PowerShell als administrator en controleer eerst of Chocolatey beschikbaar is:
-
-```powershell
-choco --version
-```
-
-Installeer Visual Studio Code, Git en Azure CLI:
-
-```powershell
-choco install vscode git azure-cli -y
-```
-
-Wanneer de installatie is voltooid, voer dan geen volgende labcommando's meer uit in PowerShell. **Sluit PowerShell volledig af**, sla route B over en ga verder bij **Start Git Bash En Controleer De Installatie**.
-
-Ga verder met route B wanneer Chocolatey niet wordt herkend of de installatie wordt geblokkeerd.
-
-#### Route B: Handmatige Installatie
-
-Download en installeer de volgende pakketten via de officiële websites:
-
-1. Download [Visual Studio Code voor Windows](https://code.visualstudio.com/download).
-   - Kies op een normale 64-bits Windows-labpc de **Windows User Installer x64**.
-   - Selecteer tijdens de installatie de opties om VS Code aan `PATH` toe te voegen en **Open with Code** beschikbaar te maken.
-2. Download [Git voor Windows](https://git-scm.com/install/windows).
-   - Gebruik de 64-bits installer en accepteer de standaardinstellingen.
-   - Git Bash wordt hiermee automatisch geïnstalleerd.
-3. Download de [Azure CLI MSI voor 64-bits Windows](https://aka.ms/installazurecliwindowsx64).
-   - Start het gedownloade MSI-bestand en doorloop de installatie.
-   - Bevestig de Windows-melding wanneer toestemming wordt gevraagd om wijzigingen aan te brengen.
-
-Gebruik de algemene documentatie wanneer een directe download niet werkt:
-
-- [Azure CLI voor Windows](https://learn.microsoft.com/cli/azure/install-azure-cli-windows)
-
-#### Start Git Bash En Controleer De Installatie
-
-Voer na route A of B de volgende stappen in deze volgorde uit:
-
-1. Sluit alle geopende PowerShell-, opdrachtprompt- en Git Bash-vensters volledig af.
-2. Open **Git Bash** vanuit het Windows Startmenu. Hierdoor worden de nieuwe commando's via het bijgewerkte `PATH` gevonden.
-3. Controleer vanuit **Git Bash** of Visual Studio Code, Git en Azure CLI correct zijn geïnstalleerd:
-
-```bash
-code --version
-git --version
-az version
-```
-
-Wanneer een commando niet wordt herkend, herstart dan eerst de labpc en voer de controle opnieuw uit. Als een installer door organisatiebeleid of ontbrekende administratorrechten wordt geblokkeerd, neem dan contact op met de trainer of werkplekbeheerder.
-
-### A2. Installeer Bicep Vanuit Git Bash
-
-Installeer de Bicep CLI via Azure CLI:
-
-```bash
-az bicep install
-az bicep version
-```
-
-Installeer vervolgens de officiële Bicep-extensie voor Visual Studio Code:
-
-```bash
-code --install-extension ms-azuretools.vscode-bicep
-```
-
-Je kunt dit ook handmatig doen in VS Code via **Extensions** (`Ctrl+Shift+X`), zoek op **Bicep** en kies de extensie van Microsoft.
-
-### A3. Clone De GitHub-Repository
-
-Ga naar een lokale werkmap en download de demo vanaf GitHub:
-
-```bash
-cd ~/Documents
-git clone https://github.com/ericvanlaargmailcom/bicep-demo-asr.git
-```
-
-Hierdoor wordt een nieuwe map met de naam `bicep-demo-asr` aangemaakt. De repository is openbaar; voor het klonen is geen GitHub-account of aanmelding nodig. Verschijnt er toch een aanmeldvenster, annuleer dit dan en controleer of je exact de bovenstaande HTTPS-URL hebt gebruikt.
-
-### A4. Open De Demo In Visual Studio Code
-
-Ga naar de zojuist gekloonde projectmap en open deze in VS Code:
-
-```bash
-cd ~/Documents/bicep-demo-asr
-code .
-```
-
-Open bovenin VS Code het menu **Terminal** en kies **Git Bash** in de lijst met terminalprofielen, zoals hieronder is weergegeven:
-
-![Git Bash selecteren als terminalprofiel in Visual Studio Code](images/vscode-git-bash-selecteren.png)
-
-Controleer dat rechtsonder in het terminalvenster **Git Bash** staat. Alle volgende deployment- en cleanupcommando's worden in deze terminal uitgevoerd.
-
-## B. Deployment Commands Met Azure CLI
-
-### B1. Meld Je Aan Bij Azure
-
-#### B1.1 Activeer MFA Met Microsoft Authenticator
-
-Voer deze eenmalige stap uit voordat je Azure CLI gebruikt of een deployment start:
+Voer deze eenmalige stap uit voordat je Cloud Shell start:
 
 1. Open [portal.azure.com](https://portal.azure.com) in de browser.
 2. Meld je aan met het Global Administrator-account van de eigen Virsoft-tenant. Kies **Werk- of schoolaccount** wanneer Microsoft om het accounttype vraagt.
@@ -210,29 +107,65 @@ Voer deze eenmalige stap uit voordat je Azure CLI gebruikt of een deployment sta
 
 Verschijnt de registratiewizard niet automatisch, open dan [Beveiligingsgegevens](https://mysignins.microsoft.com/security-info), kies **Aanmeldingsmethode toevoegen** en selecteer **Microsoft Authenticator**. Zie zo nodig de [officiële Microsoft-instructie voor het instellen van beveiligingsgegevens](https://support.microsoft.com/en-US/accounts-billing/work-school/set-up-security-info-from-a-sign-in-page).
 
-> Ga pas verder wanneer MFA volledig is ingesteld. Anders kan een deployment stoppen met foutcode `AADSTS50079` en de melding dat registratie voor meervoudige verificatie vereist is.
+### A2. Start Azure Cloud Shell Met Bash
 
-#### B1.2 Meld Je Aan Met Azure CLI
+1. Klik rechtsboven in de Azure Portal op het pictogram **Cloud Shell** (`>_`).
+2. Kies **Bash** wanneer naar het shelltype wordt gevraagd.
+3. Kies bij de eerste start **No storage account required** voor een tijdelijke sessie.
+4. Selecteer de eigen Azure-subscription en kies **Apply**.
+5. Wacht totdat de Bash-prompt verschijnt.
 
-Log in met het Global Administrator-account van de eigen Virsoft-tenant:
+> De trainer moet de resourceprovider `Microsoft.CloudShell` vooraf in de cursus-subscription registreren. Meld het bij de trainer wanneer Cloud Shell aangeeft dat deze provider niet is geregistreerd.
+
+Controleer de vooraf geïnstalleerde hulpmiddelen:
 
 ```bash
-az login
+az version
+az bicep version
+git --version
 ```
 
-Verschijnt in de browser een pop-up waarin je het accounttype moet kiezen, selecteer dan **Werk- of schoolaccount**. Kies niet voor een persoonlijk Microsoft-account; het Global Administrator-account hoort bij Microsoft Entra ID van de Virsoft-tenant.
+Cloud Shell is al aangemeld met de portalsessie. Voer daarom in dit lab geen afzonderlijk `az login`-commando uit.
 
-#### B1.3 Controleer Tenant En Subscription
+### A3. Clone De GitHub-Repository In Cloud Shell
 
-Controleer na het aanmelden welke tenant en subscription actief zijn:
+Download de publieke repository in de tijdelijke Cloud Shell-sessie:
 
 ```bash
+git clone https://github.com/ericvanlaargmailcom/bicep-demo-asr.git
+cd bicep-demo-asr
+```
+
+Voor het klonen is geen GitHub-account of aanmelding nodig. De bestanden bestaan alleen zolang de tijdelijke Cloud Shell-sessie bestaat. Start na een beëindigde sessie opnieuw bij **A2** en clone de repository opnieuw.
+
+### A4. Open De Cloud Shell-editor
+
+Open vanuit de projectmap de ingebouwde editor:
+
+```bash
+code .
+```
+
+De Cloud Shell-editor bevat een bestandsverkenner en syntax highlighting. Gebruik de editor om `main.bicep`, de parameterbestanden en de modules te bekijken. Gebruik de Bash-terminal onder de editor voor alle deployment- en cleanupcommando's. Met ``Ctrl+` `` wissel je tussen de editor en de terminal.
+
+## B. Deployment Commands In Azure Cloud Shell
+
+Voer alle commando's in dit hoofdstuk uit in **Bash** vanuit de Cloud Shell-map `bicep-demo-asr`. Houd Cloud Shell tijdens de oefeningen geopend. Na een beëindigde tijdelijke sessie moet je de repository opnieuw clonen en variabelen zoals `RESOURCE_GROUP_NAME`, `WEB_APP_NAME`, `STACK_NAME` en `GROUP_ID` opnieuw instellen bij de stap waar je verdergaat.
+
+### B1. Valideer En Deploy De Omgeving
+
+#### B1.1 Controleer De Cloud Shell-context
+
+Controleer vanuit de map `bicep-demo-asr` welke tenant en subscription actief zijn:
+
+```bash
+pwd
 az account show --output table
 ```
 
-Ga pas verder wanneer `az account show` de juiste tenant en subscription toont.
+Ga pas verder wanneer `pwd` eindigt op `/bicep-demo-asr` en `az account show` de juiste tenant en subscription toont.
 
-#### B1.4 Valideer De Bicep-template
+#### B1.2 Valideer De Bicep-template
 
 Valideer of de Bicep compileert. Bij een geldige template verschijnt een compacte JSON-bevestiging; bij een fout toont de Bicep-compiler de foutmelding en geeft het commando een mislukte exitcode terug:
 
@@ -251,7 +184,7 @@ Wil je ook de volledige gegenereerde ARM-template als JSON bekijken, gebruik dan
 az bicep build --file main.bicep --stdout
 ```
 
-#### B1.5 Deploy De Dev-omgeving
+#### B1.3 Deploy De Dev-omgeving
 
 Deploy de dev-omgeving:
 
@@ -262,7 +195,7 @@ az deployment sub create \
   --parameters main.parameters.dev.bicepparam
 ```
 
-#### B1.6 Deploy Eventueel Test Of Prod
+#### B1.4 Deploy Eventueel Test Of Prod
 
 Deploy test of prod door het parameterbestand te wisselen:
 
@@ -820,6 +753,8 @@ De uitvoerder moet op subscriptionniveau Deployment Stacks en de gedeclareerde r
 
 ### E5. Meer Informatie
 
+- [Microsoft Learn: tijdelijke Azure Cloud Shell-sessies](https://learn.microsoft.com/azure/cloud-shell/get-started/ephemeral)
+- [Microsoft Learn: Azure Cloud Shell-editor](https://learn.microsoft.com/azure/cloud-shell/use-cloud-shell-editor-new)
 - [Microsoft Learn: Deployment Stacks met Bicep](https://learn.microsoft.com/azure/azure-resource-manager/bicep/deployment-stacks)
 - [Microsoft Learn: ARM-deploymentmodi](https://learn.microsoft.com/azure/azure-resource-manager/templates/deployment-modes)
 - [Azure CLI: az stack sub](https://learn.microsoft.com/cli/azure/stack/sub)
