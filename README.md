@@ -197,8 +197,20 @@ az deployment sub create \
   --name "$DEPLOYMENT_NAME" \
   --location westeurope \
   --template-file main.bicep \
-  --parameters main.parameters.dev.bicepparam
+  --parameters main.parameters.dev.bicepparam \
+  --verbose
 ```
+
+`--verbose` toont aanvullende informatie van Azure CLI. Tijdens een langlopende deployment blijft de voortgangsindicator soms alsnog op `Running` staan. Wil je tussendoor zien welke onderdelen Azure verwerkt, open dan via **New session** een tweede Cloud Shell-sessie en voer daar uit:
+
+```bash
+az deployment operation sub list \
+  --name asr-dev \
+  --query "[].{Resource:properties.targetResource.resourceName,Type:properties.targetResource.resourceType,State:properties.provisioningState}" \
+  --output table
+```
+
+Voer dit controlecommando eventueel na enkele minuten opnieuw uit. De oorspronkelijke Cloud Shell-sessie blijft de deployment uitvoeren.
 
 #### B1.4 Deploy Eventueel Test Of Prod
 
