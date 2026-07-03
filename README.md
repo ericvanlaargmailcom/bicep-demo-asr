@@ -4,37 +4,25 @@ In deze leerlijn bouw je Azure-infrastructuur vijf keer op een steeds beter auto
 
 Je hebt voor de volledige leerlijn alleen deze README, een moderne browser en toegang tot de cursus-subscription nodig. Installeer lokaal geen Visual Studio Code, Git, Bicep, Azure CLI of Azure PowerShell. Vanaf **P2** gebruik je de vooraf geïnstalleerde hulpmiddelen in Azure Cloud Shell.
 
-## De Didactische Opbouw
+## Opbouw En Directe Links
 
-| Fase | Werkwijze | Wat je leert | Beperking die je ervaart |
+| Fase | Werkwijze of onderwerp | Wat je leert en waarom de volgende fase nodig is | Directe URL |
 |---|---|---|---|
-| **P1** | Azure Portal | Resources en afhankelijkheden visueel herkennen. | Handmatige stappen zijn lastig exact te herhalen. |
-| **P2** | Azure CLI | Azure imperatief en scriptbaar aansturen. | Je beschrijft losse acties in plaats van één gewenste eindtoestand. |
-| **P3** | ARM JSON-template | Infrastructuur declaratief en herhaalbaar vastleggen. | Kale JSON is uitgebreid en lastig leesbaar. |
-| **P4** | Bicep-template | Dezelfde ARM-engine met compacte syntax en typecontrole gebruiken. | Eén groot bestand is nog niet automatisch een organisatiebrede standaard. |
-| **A–E** | Herbruikbare Bicep-modules | Security-by-default, parameters, drift, ownership, lifecyclebeheer en governance toepassen. | Je ziet waar platformstandaarden en applicatieverantwoordelijkheid elkaar raken. |
+| **P0** | Eenmalige voorbereiding | Aanmelden, MFA activeren en de cursus-subscription controleren. | [Open P0](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p0) |
+| **P1** | Azure Portal | Resources en afhankelijkheden visueel herkennen. Handmatige stappen zijn lastig exact te herhalen. | [Open P1](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p1) |
+| **P2** | Azure CLI | Azure imperatief en scriptbaar aansturen. Je beschrijft nog losse acties in plaats van één gewenste eindtoestand. | [Open P2](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p2) |
+| **P3** | ARM JSON-template | Infrastructuur declaratief en herhaalbaar vastleggen. Kale JSON blijkt uitgebreid en lastig leesbaar. | [Open P3](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p3) |
+| **P4** | Bicep-template | Dezelfde ARM-engine met compacte syntax en typecontrole gebruiken. Eén groot bestand is nog niet automatisch een organisatiebrede standaard. | [Open P4](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p4) |
+| **Einddemo** | Herbruikbare Bicep-modules | De architectuur, parameters en folderstructuur van de complete oplossing leren kennen. | [Open de einddemo](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-einddemo) |
+| **A** | Einddemo voorbereiden | Cloud Shell, repository en editor gereedmaken. | [Open A](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-a) |
+| **B** | Deployments en oefeningen | Security-by-default, omgevingsparameters, drift, What-If, ownership, lifecyclebeheer en RBAC als code toepassen. | [Open B](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-b) |
+| **C** | Architectuur en kernboodschap | Herkennen hoe platformstandaarden en applicatieverantwoordelijkheid elkaar aanvullen. | [Open C](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-c) |
+| **D** | Cleanup | Alle cursusresources gecontroleerd verwijderen. | [Open D](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-d) |
+| **E** | Optionele verdieping | Andere lifecyclekeuzes, deny settings en probleemoplossing als naslag gebruiken. | [Open E](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-e) |
 
 Iedere fase lost bewust een probleem van de vorige fase op. Bicep verschijnt daardoor niet als zomaar een nieuwe taal, maar als een logisch vervolg op ervaringen die je eerder in de leerlijn hebt opgedaan.
 
 De letter **P** staat voor *voortraject*. Gebruik bij vragen steeds de volledige stapcode, bijvoorbeeld: “Ik ben bij P3.4”. Vanaf de einddemo gebruik je de bestaande codes A1, B1.3, B5.6 enzovoort. De oefeningen wisselen tussen Windows- en Linux-VM's omdat ze verschillende officiële quickstarts combineren; het leerdoel is het verschil tussen de deploymentmethoden, niet het verschil tussen de besturingssystemen.
-
-## Directe Links Naar Iedere Fase
-
-Gebruik deze vaste URL's om cursisten rechtstreeks naar het juiste gedeelte van de leerlijn te sturen:
-
-| Fase | Directe URL |
-|---|---|
-| P0 – Eenmalige voorbereiding | [Open P0](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p0) |
-| P1 – Windows-VM via de Azure Portal | [Open P1](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p1) |
-| P2 – Linux-VM met Azure CLI | [Open P2](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p2) |
-| P3 – Windows-VM met ARM JSON | [Open P3](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p3) |
-| P4 – Linux-VM met Bicep | [Open P4](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p4) |
-| Einddemo – Overzicht en architectuur | [Open de einddemo](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-einddemo) |
-| A – Einddemo voorbereiden | [Open A](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-a) |
-| B – Deployments en oefeningen | [Open B](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-b) |
-| C – Architectuur en kernboodschap | [Open C](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-c) |
-| D – Cleanup | [Open D](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-d) |
-| E – Optionele verdieping | [Open E](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-e) |
 
 > **Let op: deze leerlijn veroorzaakt werkelijke Azure-kosten.** Verwijder de oefen-resourcegroep aan het einde van iedere P-fase. De einddemo bevat betaalde `P1v3` App Service Plans. Virsoft ruimt de cursus-subscription na maximaal zes uur automatisch op, maar wacht daar tijdens het oefenen niet onnodig op.
 
