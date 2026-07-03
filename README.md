@@ -776,11 +776,13 @@ Voor een afwijkende `applicationName` geef je de naam als argument mee:
 
 Omdat deze versie geen Key Vault meer gebruikt, is er geen soft-delete of purge-stap nodig. De cleanup blijft daardoor geschikt voor herhaalde cursusdemo's.
 
-## E. Verdieping – Deployment Stacks
+## E. Optionele Verdieping En Naslag – Deployment Stacks
+
+In **B5** en **B6** heb je Deployment Stacks al praktisch gebruikt: de stack nam ownership over de resources en verwijderde met `deleteAll` het staging slot toen dit uit de gewenste configuratie verdween. Dit optionele hoofdstuk is geen nieuwe doorlopende oefening, maar naslag voor andere lifecyclekeuzes, beveiliging en veelvoorkomende problemen.
 
 ### E1. Action On Unmanage
 
-`action-on-unmanage` bepaalt wat Azure doet wanneer een resource door een stack-update of het verwijderen van de stack niet langer wordt beheerd:
+In **B6** gebruikte je `deleteAll`. Ter vergelijking toont onderstaande tabel ook de twee andere keuzes voor wat Azure doet wanneer een resource na een stack-update of het verwijderen van de stack niet langer wordt beheerd:
 
 | Actie | Gevolg |
 |---|---|
@@ -788,14 +790,7 @@ Omdat deze versie geen Key Vault meer gebruikt, is er geen soft-delete of purge-
 | `deleteResources` | Beheerde resources worden verwijderd, maar beheerde resourcegroepen blijven bestaan. |
 | `deleteAll` | Beheerde resources en beheerde resourcegroepen worden verwijderd. |
 
-Gebruik `deleteAll` alleen wanneer de stack eigenaar is van de volledige resourcegroep en alles daarin veilig verwijderd mag worden. Controleer vóór iedere update of delete de beheerde resources:
-
-```bash
-az stack sub show \
-  --name "$STACK_NAME" \
-  --query "resources[].{resource:id,status:status}" \
-  --output table
-```
+Gebruik `deleteAll` alleen wanneer de stack eigenaar is van de volledige resourcegroep en alles daarin veilig verwijderd mag worden. Controleer vóór iedere update of delete de beheerde resources zoals je bij **B5.6** hebt gedaan.
 
 ### E2. Deny Settings
 
