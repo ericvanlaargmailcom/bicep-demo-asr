@@ -18,7 +18,27 @@ Iedere fase lost bewust een probleem van de vorige fase op. Bicep verschijnt daa
 
 De letter **P** staat voor *voortraject*. Gebruik bij vragen steeds de volledige stapcode, bijvoorbeeld: “Ik ben bij P3.4”. Vanaf de einddemo gebruik je de bestaande codes A1, B1.3, B5.6 enzovoort. De oefeningen wisselen tussen Windows- en Linux-VM's omdat ze verschillende officiële quickstarts combineren; het leerdoel is het verschil tussen de deploymentmethoden, niet het verschil tussen de besturingssystemen.
 
+## Directe Links Naar Iedere Fase
+
+Gebruik deze vaste URL's om cursisten rechtstreeks naar het juiste gedeelte van de leerlijn te sturen:
+
+| Fase | Directe URL |
+|---|---|
+| P0 – Eenmalige voorbereiding | [Open P0](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p0) |
+| P1 – Windows-VM via de Azure Portal | [Open P1](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p1) |
+| P2 – Linux-VM met Azure CLI | [Open P2](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p2) |
+| P3 – Windows-VM met ARM JSON | [Open P3](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p3) |
+| P4 – Linux-VM met Bicep | [Open P4](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p4) |
+| Einddemo – Overzicht en architectuur | [Open de einddemo](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-einddemo) |
+| A – Einddemo voorbereiden | [Open A](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-a) |
+| B – Deployments en oefeningen | [Open B](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-b) |
+| C – Architectuur en kernboodschap | [Open C](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-c) |
+| D – Cleanup | [Open D](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-d) |
+| E – Optionele verdieping | [Open E](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-e) |
+
 > **Let op: deze leerlijn veroorzaakt werkelijke Azure-kosten.** Verwijder de oefen-resourcegroep aan het einde van iedere P-fase. De einddemo bevat betaalde `P1v3` App Service Plans. Virsoft ruimt de cursus-subscription na maximaal zes uur automatisch op, maar wacht daar tijdens het oefenen niet onnodig op.
+
+<a id="fase-p0"></a>
 
 ## P0. Eenmalige Voorbereiding
 
@@ -43,6 +63,8 @@ Verschijnt de registratiewizard niet automatisch, open dan [Beveiligingsgegevens
 4. Controleer rechtsboven dat je met het cursusaccount in de juiste tenant bent aangemeld.
 
 Gebruik in alle volgende fasen uitsluitend deze cursus-subscription.
+
+<a id="fase-p1"></a>
 
 ## P1. Deploy Een Windows-VM Via De Azure Portal
 
@@ -101,6 +123,8 @@ Sluit daarna de RDP-sessie. Open het public IP-adres van de VM in een browser en
 4. Wacht totdat de resourcegroep niet meer bestaat.
 
 Je verwijdert bewust de volledige resourcegroep. Daarmee verdwijnen ook alle ondersteunende resources die de portal voor de VM heeft aangemaakt.
+
+<a id="fase-p2"></a>
 
 ## P2. Deploy Een Linux-VM Met Azure CLI
 
@@ -221,6 +245,8 @@ cd bicep-demo-asr
 
 Voor het klonen is geen GitHub-account nodig. Omdat Cloud Shell tijdelijk is, moet je na een beëindigde sessie de repository opnieuw clonen.
 
+<a id="fase-p3"></a>
+
 ## P3. Deploy Een Windows-VM Met Een Kale ARM-template
 
 Azure CLI maakte in P2 meerdere resources voor je op basis van één hoog-niveaucommando. In deze fase leg je de gewenste resources en afhankelijkheden zelf declaratief vast in JSON. De oefening bouwt voort op de [Microsoft-instructie voor een Windows-VM met een ARM-template](https://learn.microsoft.com/azure/virtual-machines/windows/ps-template).
@@ -323,6 +349,8 @@ Remove-AzResourceGroup `
 cd ~/bicep-demo-asr
 ```
 
+<a id="fase-p4"></a>
+
 ## P4. Deploy Een Linux-VM Met Bicep
 
 Bicep gebruikt dezelfde Azure Resource Manager-engine als de JSON-template uit P3. Het verschil zit vooral in de schrijfervaring: compacte declaraties, typecontrole, symbolische namen en automatisch afgeleide afhankelijkheden. De oefening is gebaseerd op de [Microsoft-quickstart voor een Linux-VM met Bicep](https://learn.microsoft.com/azure/virtual-machines/linux/quick-create-bicep?tabs=CLI).
@@ -417,6 +445,8 @@ Wacht totdat de laatste uitvoer `false` is.
 | Herbruikbare modules | Nee | Alleen via eigen scripts | Mogelijk, maar uitgebreid | Ja, compact en typeveilig |
 
 Je hebt nu de basis van Bicep ervaren. In de einddemo ga je van één Bicep-bestand naar een realistische oplossing met herbruikbare modules, omgevingsparameters, security-by-default, driftcontrole en lifecyclebeheer.
+
+<a id="fase-einddemo"></a>
 
 ## Einddemo: Secure Azure Landing Zone Met Herbruikbare Bicep-modules
 
@@ -515,6 +545,8 @@ De parameterbestanden gebruiken het Bicep-native `.bicepparam` formaat met dummy
 
 Web App- en Storage Account-namen moeten wereldwijd uniek zijn. De template voegt daarom automatisch een deterministische `uniqueString` op basis van de subscription-ID toe. Cursisten hoeven hiervoor geen eigen naam te bedenken.
 
+<a id="fase-a"></a>
+
 ## A. Bereid De Einddemo Voor
 
 Voer de einddemo uit in **Bash** vanuit de map `bicep-demo-asr`. Wanneer je P2 tot en met P4 in dezelfde Cloud Shell-sessie hebt uitgevoerd, staan de repository en hulpmiddelen al klaar.
@@ -555,6 +587,8 @@ code .
 ```
 
 De Cloud Shell-editor bevat een bestandsverkenner en syntax highlighting. Gebruik de editor om `main.bicep`, de parameterbestanden en modules te bekijken. Gebruik de Bash-terminal onder de editor voor alle deployment- en cleanupcommando's. Met ``Ctrl+` `` wissel je tussen de editor en de terminal.
+
+<a id="fase-b"></a>
 
 ## B. Deployment Commands In Azure Cloud Shell
 
@@ -1140,6 +1174,8 @@ az ad group delete --group "$GROUP_ID"
 
 > **Klaar met de oefeningen?** Voer nu `./scripts/cleanup.sh` uit. Hiermee verwijder je de bekende Deployment Stacks, de resourcegroepen van dev, test en prod en eventuele achtergebleven resourcegroepen uit P1 tot en met P4.
 
+<a id="fase-c"></a>
+
 ## C. Wat Je Uit De Architectuur Kunt Afleiden
 
 ### C1. Bekijk De Orkestratie In Main.bicep
@@ -1172,6 +1208,8 @@ De parameterbestanden en deployments maken bovendien zichtbaar welke standaard i
 
 De winst zit dus niet alleen in minder Bicep-code schrijven. Herbruikbare modules vertalen architectuurafspraken naar een herhaalbare technische standaard. Ze maken de veilige werkwijze de eenvoudige standaardroute voor teams en zorgen dat verbeteringen centraal, gecontroleerd en aantoonbaar kunnen worden doorgevoerd.
 
+<a id="fase-d"></a>
+
 ## D. Cleanup Commands
 
 Ben je klaar met ontdekken of neem je een langere pauze, voer dan altijd het cleanup-script uit:
@@ -1189,6 +1227,8 @@ Voor een afwijkende `applicationName` geef je de naam als argument mee:
 ```
 
 Omdat deze versie geen Key Vault meer gebruikt, is er geen soft-delete of purge-stap nodig. De cleanup blijft daardoor geschikt voor herhaalde cursusdemo's.
+
+<a id="fase-e"></a>
 
 ## E. Optionele Verdieping En Naslag – Deployment Stacks
 
