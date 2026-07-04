@@ -116,7 +116,7 @@ Je verwijdert bewust de volledige resourcegroep. Daarmee verdwijnen ook alle ond
 
 ## P2. Deploy Een Linux-VM Met Azure CLI
 
-Je gaat nu vergelijkbare infrastructuur maken met commando's. De stappen zijn daardoor beter te herhalen en in een script op te nemen. De oefening is gebaseerd op de [Microsoft-quickstart voor een Linux-VM met Azure CLI](https://learn.microsoft.com/azure/virtual-machines/linux/quick-create-cli).
+Met Azure CLI gebruik je een **imperatieve methode**: je geeft Azure stap voor stap opdrachten die het moet uitvoeren. Net als in de portal geef je antwoord op vragen zoals: welke resource wil je maken, hoe moet die heten, in welke regio moet die komen en welke configuratie moet worden gebruikt? Het verschil is dat je de antwoorden nu vastlegt als argumenten in commando's. Daardoor wordt dezelfde handeling geautomatiseerd, herhaalbaar en geschikt om later in een script op te nemen.
 
 ### P2.1 Start Azure Cloud Shell Met Bash
 
@@ -324,12 +324,22 @@ Open daarnaast in de Azure Portal de resourcegroep `rg-leerlijn-arm-we-001`, bek
 ### P3.6 Verwijder De ARM-resources En Keer Terug Naar Bash
 
 ```powershell
-Remove-AzResourceGroup `
+$deleteJob = Remove-AzResourceGroup `
   -Name $ArmResourceGroup `
-  -Force
+  -Force `
+  -AsJob
+
+while ((Get-Job -Id $deleteJob.Id).State -in @('NotStarted', 'Running')) {
+  Write-Host "[$(Get-Date -Format 'HH:mm:ss')] Resourcegroep wordt verwijderd..."
+  Start-Sleep -Seconds 10
+}
+
+Receive-Job -Id $deleteJob.Id
 ```
 
-1. Wacht totdat de resourcegroep is verwijderd.
+Het verwijderen draait op de achtergrond. Zolang Azure bezig is, verschijnt iedere tien seconden een nieuwe statusregel. `Receive-Job` toont daarna het eindresultaat. Ga pas verder wanneer de opdracht is afgerond.
+
+1. Wacht totdat de resourcegroep is verwijderd en het eindresultaat is getoond.
 2. Gebruik **Switch to Bash** in de Cloud Shell-werkbalk.
 3. Ga terug naar de repository:
 
