@@ -6,7 +6,7 @@ Je hebt voor de volledige leerlijn alleen deze README, een moderne browser en to
 
 ## Opbouw En Directe Links
 
-| Fase | Werkwijze of onderwerp | Wat je leert en waarom de volgende fase nodig is | Directe URL |
+| Fase | Werkwijze of onderwerp | Waarom dit nodig is | Directe URL |
 |---|---|---|---|
 | **P0** | Eenmalige voorbereiding | Aanmelden, MFA activeren en de cursus-subscription controleren. | [Open P0](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p0) |
 | **P1** | Azure Portal | Resources en afhankelijkheden visueel herkennen. Handmatige stappen zijn lastig exact te herhalen. | [Open P1](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p1) |
@@ -15,10 +15,10 @@ Je hebt voor de volledige leerlijn alleen deze README, een moderne browser en to
 | **P4** | Bicep-template | Dezelfde ARM-engine met compacte syntax en typecontrole gebruiken. Eén groot bestand is nog niet automatisch een organisatiebrede standaard. | [Open P4](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p4) |
 | **Eindoefening** | Herbruikbare Bicep-modules | De architectuur, parameters en folderstructuur van de complete oplossing leren kennen. | [Open de eindoefening](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-eindoefening) |
 | **A** | Eindoefening voorbereiden | Cloud Shell, repository en editor gereedmaken. | [Open A](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-a) |
-| **B** | Deployments en oefeningen | Security-by-default, omgevingsparameters, drift, What-If, ownership, lifecyclebeheer en RBAC als code toepassen. | [Open B](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-b) |
-| **C** | Architectuur en kernboodschap | Herkennen hoe platformstandaarden en applicatieverantwoordelijkheid elkaar aanvullen. | [Open C](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-c) |
+| **B** | Deployments en oefeningen | Je leert de Bicep-oplossing echt gebruiken: deployen naar dev/test/prod, parameters aanpassen, What-If lezen, drift herkennen, handmatige wijzigingen herstellen en Deployment Stacks gebruiken voor lifecyclebeheer. Ook zie je hoe RBAC als code in het model past. | [Open B](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-b) |
+| **C** | Architectuur en kernboodschap | Je leert de technische oefeningen terugvertalen naar architectuurtaal: welke verantwoordelijkheden liggen bij het platform, wat blijft applicatiespecifiek en waarom standaardmodules helpen om sneller én veiliger te werken. | [Open C](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-c) |
 | **D** | Cleanup | Alle cursusresources gecontroleerd verwijderen. | [Open D](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-d) |
-| **E** | Optionele verdieping | Andere lifecyclekeuzes, deny settings en probleemoplossing als naslag gebruiken. | [Open E](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-e) |
+| **E** | Optionele verdieping | Je leert Deployment Stacks verder duiden: wat `deleteAll`, `deleteResources` en `detachAll` betekenen, hoe deny settings wijzigingen kunnen blokkeren en welke foutmeldingen of situaties je later kunt tegenkomen. Dit deel is vooral naslag na de praktische oefeningen. | [Open E](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-e) |
 
 Iedere fase lost bewust een probleem van de vorige fase op. Bicep verschijnt daardoor niet als zomaar een nieuwe taal, maar als een logisch vervolg op ervaringen die je eerder in de leerlijn hebt opgedaan.
 
