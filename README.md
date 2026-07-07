@@ -86,7 +86,7 @@ In deze eerste fase werk je volledig visueel. Je ziet welke keuzes nodig zijn om
 
 De portal vroeg vooral om functionele keuzes. Veel resourcenamen, afhankelijkheden en standaardinstellingen werden automatisch voor je ingevuld. Dat is snel en overzichtelijk, maar de exacte reeks muisklikken is niet vanzelf reproduceerbaar.
 
-### P1.3 Test De VM Optioneel Via RDP
+### P1.3 Test De VM Via RDP
 
 Voer deze stap alleen uit wanneer RDP op de lab-pc is toegestaan:
 
