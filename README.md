@@ -13,8 +13,8 @@ Je hebt voor de volledige leerlijn alleen deze README, een moderne browser en to
 | **P2** | Azure CLI | Azure imperatief en scriptbaar aansturen. Je beschrijft nog losse acties in plaats van één gewenste eindtoestand. | [Open P2](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p2) |
 | **P3** | ARM JSON-template | Infrastructuur declaratief en herhaalbaar vastleggen. Kale JSON blijkt uitgebreid en lastig leesbaar. | [Open P3](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p3) |
 | **P4** | Bicep-template | Dezelfde ARM-engine met compacte syntax en typecontrole gebruiken. Eén groot bestand is nog niet automatisch een organisatiebrede standaard. | [Open P4](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p4) |
-| **Einddemo** | Herbruikbare Bicep-modules | De architectuur, parameters en folderstructuur van de complete oplossing leren kennen. | [Open de einddemo](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-einddemo) |
-| **A** | Einddemo voorbereiden | Cloud Shell, repository en editor gereedmaken. | [Open A](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-a) |
+| **Eindoefening** | Herbruikbare Bicep-modules | De architectuur, parameters en folderstructuur van de complete oplossing leren kennen. | [Open de eindoefening](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-eindoefening) |
+| **A** | Eindoefening voorbereiden | Cloud Shell, repository en editor gereedmaken. | [Open A](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-a) |
 | **B** | Deployments en oefeningen | Security-by-default, omgevingsparameters, drift, What-If, ownership, lifecyclebeheer en RBAC als code toepassen. | [Open B](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-b) |
 | **C** | Architectuur en kernboodschap | Herkennen hoe platformstandaarden en applicatieverantwoordelijkheid elkaar aanvullen. | [Open C](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-c) |
 | **D** | Cleanup | Alle cursusresources gecontroleerd verwijderen. | [Open D](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-d) |
@@ -22,9 +22,9 @@ Je hebt voor de volledige leerlijn alleen deze README, een moderne browser en to
 
 Iedere fase lost bewust een probleem van de vorige fase op. Bicep verschijnt daardoor niet als zomaar een nieuwe taal, maar als een logisch vervolg op ervaringen die je eerder in de leerlijn hebt opgedaan.
 
-De letter **P** staat voor *voortraject*. Gebruik bij vragen steeds de volledige stapcode, bijvoorbeeld: “Ik ben bij P3.4”. Vanaf de einddemo gebruik je de bestaande codes A1, B1.3, B5.6 enzovoort. De oefeningen wisselen tussen Windows- en Linux-VM's omdat ze verschillende officiële quickstarts combineren; het leerdoel is het verschil tussen de deploymentmethoden, niet het verschil tussen de besturingssystemen.
+De letter **P** staat voor *voortraject*. Gebruik bij vragen steeds de volledige stapcode, bijvoorbeeld: “Ik ben bij P3.4”. Vanaf de eindoefening gebruik je de bestaande codes A1, B1.3, B5.6 enzovoort. De oefeningen wisselen tussen Windows- en Linux-VM's omdat ze verschillende officiële quickstarts combineren; het leerdoel is het verschil tussen de deploymentmethoden, niet het verschil tussen de besturingssystemen.
 
-> **Let op: deze leerlijn veroorzaakt werkelijke Azure-kosten.** In P1 tot en met P4 laat je de vier oefen-resourcegroepen tijdelijk staan zodat je ze naast elkaar kunt vergelijken. Verwijder ze daarna in de gezamenlijke cleanup aan het einde van P4. De einddemo bevat betaalde `P1v3` App Service Plans. Virsoft ruimt de cursus-subscription na maximaal zes uur automatisch op, maar wacht daar tijdens het oefenen niet onnodig op.
+> **Let op: deze leerlijn veroorzaakt werkelijke Azure-kosten.** In P1 tot en met P4 laat je de vier oefen-resourcegroepen tijdelijk staan zodat je ze naast elkaar kunt vergelijken. Verwijder ze daarna in de gezamenlijke cleanup aan het einde van P4. De eindoefening bevat betaalde `P1v3` App Service Plans. Virsoft ruimt de cursus-subscription na maximaal zes uur automatisch op, maar wacht daar tijdens het oefenen niet onnodig op.
 
 <a id="fase-p0"></a>
 
@@ -507,17 +507,17 @@ Dit Bash-script ruimt de resourcegroepen één voor één op. Per resourcegroep 
 | Parameters en outputs | Via formulieren | Via argumenten en queries | Ja | Ja |
 | Herbruikbare modules | Nee | Alleen via eigen scripts | Mogelijk, maar uitgebreid | Ja, compact en typeveilig |
 
-Je hebt nu de basis van Bicep ervaren. In de einddemo ga je van één Bicep-bestand naar een realistische oplossing met herbruikbare modules, omgevingsparameters, security-by-default, driftcontrole en lifecyclebeheer.
+Je hebt nu de basis van Bicep ervaren. In de eindoefening ga je van één Bicep-bestand naar een realistische oplossing met herbruikbare modules, omgevingsparameters, security-by-default, driftcontrole en lifecyclebeheer.
 
-<a id="fase-einddemo"></a>
+<a id="fase-eindoefening"></a>
 
-## Einddemo: Secure Azure Landing Zone Met Herbruikbare Bicep-modules
+## Eindoefening: Secure Azure Landing Zone Met Herbruikbare Bicep-modules
 
 Deze repository bevat een compacte ASR-demo over herbruikbare Azure Bicep-modules. De demo laat zien hoe je met een klein aantal gestandaardiseerde modules snel een veilige applicatieomgeving uitrolt met consistente naming, tags, monitoring en private connectivity.
 
 De insteek is bewust compact: geen enterprise landing zone met tientallen lagen, maar een realistische mini-landing-zone waarin de principes duidelijk zichtbaar blijven.
 
-### Doel Van De Einddemo
+### Doel Van De Eindoefening
 
 In deze demo ontdek je hoe een financiële organisatie security-by-default en herhaalbaarheid kan combineren:
 
@@ -527,7 +527,7 @@ In deze demo ontdek je hoe een financiële organisatie security-by-default en he
 - Governance is zichtbaar via verplichte tags voor applicatie, omgeving, eigenaar, cost center, beheerwijze en klant.
 - Publieke toegang staat uit voor dataresources; toegang loopt via private endpoints en private DNS.
 
-### Architectuur Van De Einddemo
+### Architectuur Van De Eindoefening
 
 De demo rolt per omgeving een applicatie-resource-group uit:
 
@@ -591,7 +591,7 @@ bicep-demo-asr/
       └─ roleAssignments.bicep
 ```
 
-### Parameters Van De Einddemo
+### Parameters Van De Eindoefening
 
 De hoofdtemplate gebruikt deze parameters:
 
@@ -610,9 +610,9 @@ Web App- en Storage Account-namen moeten wereldwijd uniek zijn. De template voeg
 
 <a id="fase-a"></a>
 
-## A. Bereid De Einddemo Voor
+## A. Bereid De Eindoefening Voor
 
-Voer de einddemo uit in **Bash** vanuit de map `bicep-demo-asr`. Wanneer je P2 tot en met P4 in dezelfde Cloud Shell-sessie hebt uitgevoerd, staan de repository en hulpmiddelen al klaar.
+Voer de eindoefening uit in **Bash** vanuit de map `bicep-demo-asr`. Wanneer je P2 tot en met P4 in dezelfde Cloud Shell-sessie hebt uitgevoerd, staan de repository en hulpmiddelen al klaar.
 
 ### A1. Controleer Of Herstel De Cloud Shell-sessie
 
