@@ -95,7 +95,9 @@ Voer deze stap alleen uit wanneer RDP op de lab-pc is toegestaan:
 3. Download en open het RDP-bestand.
 4. Meld je aan met `azureuser` en het tijdelijke wachtwoord.
 5. Accepteer de certificaatwaarschuwing voor deze tijdelijke oefen-VM.
-6. Open PowerShell in de VM en installeer IIS:
+6. Open PowerShell in de VM en installeer IIS.
+
+Uitvoeren in **PowerShell in de VM**:
 
 ```powershell
 Install-WindowsFeature -Name Web-Server -IncludeManagementTools
@@ -127,6 +129,8 @@ Cloud Shell is al aangemeld met de portalsessie. Voer daarom geen afzonderlijk `
 
 ### P2.2 Controleer De CLI-context
 
+Uitvoeren in **Bash**:
+
 ```bash
 az version
 az account show --output table
@@ -135,6 +139,8 @@ az account show --output table
 Ga pas verder wanneer de juiste tenant en cursus-subscription worden getoond.
 
 ### P2.3 Stel De Variabelen In
+
+Uitvoeren in **Bash**:
 
 ```bash
 CLI_RESOURCE_GROUP="rg-leerlijn-cli-we-001"
@@ -146,6 +152,8 @@ CLI_USERNAME="azureuser"
 Variabelen maken het commando herbruikbaar zonder iedere waarde op meerdere plaatsen te wijzigen.
 
 ### P2.4 Maak De Resourcegroep En VM
+
+Uitvoeren in **Bash**:
 
 ```bash
 az group create \
@@ -169,6 +177,8 @@ az vm create \
 
 ### P2.5 Controleer De Deployment
 
+Uitvoeren in **Bash**:
+
 ```bash
 az vm show \
   --resource-group "$CLI_RESOURCE_GROUP" \
@@ -186,6 +196,8 @@ az resource list \
 Vergelijk de resourcelijst met P1. Je hebt opnieuw een VM en ondersteunende resources gekregen, maar deze keer beschreef je handelingen: maak eerst een resourcegroep en voer daarna `az vm create` uit.
 
 Test SSH eventueel rechtstreeks vanuit Cloud Shell:
+
+Uitvoeren in **Bash**:
 
 ```bash
 CLI_PUBLIC_IP=$(az vm show \
@@ -209,6 +221,8 @@ Aan het einde van P4 vergelijk je deze CLI-resourcegroep met de portal-resourceg
 ### P2.7 Clone Deze Repository
 
 De volgende fasen gebruiken voorbeeldbestanden uit deze publieke repository:
+
+Uitvoeren in **Bash**:
 
 ```bash
 cd ~
@@ -236,6 +250,8 @@ Azure CLI maakte in P2 meerdere resources voor je op basis van één hoog-niveau
 2. Wacht op de PowerShell-prompt.
 3. Ga terug naar de repository:
 
+Uitvoeren in **PowerShell**:
+
 ```powershell
 Set-Location ~/bicep-demo-asr
 Get-AzContext
@@ -246,6 +262,8 @@ Controleer dat `Get-AzContext` de cursus-subscription toont.
 ### P3.2 Bekijk De ARM-template
 
 Open de kale JSON-template:
+
+Uitvoeren in **PowerShell**:
 
 ```powershell
 code learning-path/arm-vm/main.json
@@ -263,6 +281,8 @@ Zoek in het bestand naar:
 De template is herhaalbaar en beschrijft de gewenste eindtoestand, maar de vele accolades, komma's, geneste properties en stringexpressies maken het bestand moeilijker te lezen en onderhouden.
 
 ### P3.3 Maak De Resourcegroep En Valideer De Template
+
+Uitvoeren in **PowerShell**:
 
 ```powershell
 $ArmResourceGroup = 'rg-leerlijn-arm-we-001'
@@ -290,6 +310,8 @@ if ($null -eq $validationErrors) {
 
 ### P3.4 Deploy De ARM-template
 
+Uitvoeren in **PowerShell**:
+
 ```powershell
 New-AzResourceGroupDeployment `
   -Name 'arm-vm' `
@@ -301,11 +323,15 @@ New-AzResourceGroupDeployment `
 
 Wis de wachtwoordvariabele zodra de deployment is gestart:
 
+Uitvoeren in **PowerShell**:
+
 ```powershell
 $ArmAdminPassword = $null
 ```
 
 ### P3.5 Controleer De ARM-deployment
+
+Uitvoeren in **PowerShell**:
 
 ```powershell
 Get-AzResourceGroupDeployment `
@@ -328,6 +354,8 @@ Aan het einde van P4 vergelijk je deze ARM-template-resourcegroep met de resourc
 1. Gebruik **Switch to Bash** in de Cloud Shell-werkbalk.
 2. Ga terug naar de repository:
 
+Uitvoeren in **Bash**:
+
 ```bash
 cd ~/bicep-demo-asr
 ```
@@ -339,6 +367,8 @@ cd ~/bicep-demo-asr
 Bicep gebruikt dezelfde Azure Resource Manager-engine als de JSON-template uit P3. Het verschil zit vooral in de schrijfervaring: compacte declaraties, typecontrole, symbolische namen en automatisch afgeleide afhankelijkheden.
 
 ### P4.1 Bekijk De Bicep-template
+
+Uitvoeren in **Bash**:
 
 ```bash
 code learning-path/bicep-vm/main.bicep
@@ -354,6 +384,8 @@ Vergelijk het bestand met `learning-path/arm-vm/main.json` en let op:
 
 ### P4.2 Controleer De Bicep-hulpmiddelen En SSH-sleutel
 
+Uitvoeren in **Bash**:
+
 ```bash
 bicep --version
 
@@ -368,6 +400,8 @@ printf 'Bicep-template is geldig.\n'
 De compiler controleert onder andere syntax, typen en beschikbare properties voordat Azure de deployment ontvangt.
 
 ### P4.3 Maak De Resourcegroep En Deploy Bicep
+
+Uitvoeren in **Bash**:
 
 ```bash
 BICEP_RESOURCE_GROUP="rg-leerlijn-bicep-we-001"
@@ -388,6 +422,8 @@ az deployment group create \
 Azure ontvangt hierbij geen Bicep-broncode. De Bicep-compiler zet het bestand eerst om naar een ARM-template en Azure Resource Manager voert die gegenereerde template uit.
 
 ### P4.4 Controleer De Bicep-deployment
+
+Uitvoeren in **Bash**:
 
 ```bash
 az deployment group show \
@@ -425,6 +461,8 @@ Let op het patroon: iedere methode maakt uiteindelijk een VM met ondersteunende 
 Dit is het belangrijkste leermoment van het voortraject: de Azure-resources lijken op elkaar, maar de manier van werken wordt steeds beter herhaalbaar, controleerbaar en onderhoudbaar.
 
 ### P4.6 Verwijder De Vier Voortraject-resourcegroepen
+
+Uitvoeren in **Bash**:
 
 ```bash
 RESOURCE_GROUPS=(
