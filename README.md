@@ -427,27 +427,36 @@ Dit is het belangrijkste leermoment van het voortraject: de Azure-resources lijk
 ### P4.6 Verwijder De Vier Voortraject-resourcegroepen
 
 ```bash
-for rg in \
-  rg-leerlijn-portal-we-001 \
-  rg-leerlijn-cli-we-001 \
-  rg-leerlijn-arm-we-001 \
+RESOURCE_GROUPS=(
+  rg-leerlijn-portal-we-001
+  rg-leerlijn-cli-we-001
+  rg-leerlijn-arm-we-001
   rg-leerlijn-bicep-we-001
-do
-  echo "Verwijderen gestart voor $rg"
+)
+
+for rg in "${RESOURCE_GROUPS[@]}"; do
+  echo "=== $rg ==="
+
+  if [ "$(az group exists --name "$rg")" != "true" ]; then
+    echo "Deze resourcegroep bestaat niet meer. Overslaan."
+    continue
+  fi
+
+  echo "Verwijderen gestart voor $rg..."
   az group delete --name "$rg" --yes --no-wait
+
+  while [ "$(az group exists --name "$rg")" = "true" ]; do
+    echo "[$(date +%H:%M:%S)] Azure is nog bezig met verwijderen van $rg..."
+    sleep 20
+  done
+
+  echo "[$(date +%H:%M:%S)] $rg is verwijderd."
 done
 
-for rg in \
-  rg-leerlijn-portal-we-001 \
-  rg-leerlijn-cli-we-001 \
-  rg-leerlijn-arm-we-001 \
-  rg-leerlijn-bicep-we-001
-do
-  echo "$rg: $(az group exists --name "$rg")"
-done
+echo "Alle vier de voortraject-resourcegroepen zijn verwijderd."
 ```
 
-De eerste lus start de verwijdering van alle vier de resourcegroepen. Door `--no-wait` krijg je de prompt snel terug. De tweede lus controleert of een resourcegroep nog bestaat. Zie je nog `true`, dan is Azure nog bezig met verwijderen. Herhaal de tweede lus na enkele minuten totdat alle regels `false` tonen.
+Dit Bash-script ruimt de resourcegroepen één voor één op. Per resourcegroep start het script de verwijdering en controleert het daarna iedere twintig seconden of Azure klaar is. Daardoor ziet de cursist tijdens het wachten steeds voortgang in plaats van een stilstaande prompt.
 
 ### P4.7 Maak De Balans Op
 
