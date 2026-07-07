@@ -237,7 +237,7 @@ Voor het klonen is geen GitHub-account nodig. Omdat Cloud Shell tijdelijk is, mo
 
 ## P3. Deploy Een Windows-VM Met Een Kale ARM-template
 
-Azure CLI maakte in P2 meerdere resources voor je op basis van één hoog-niveaucommando. In deze fase leg je de gewenste resources en afhankelijkheden zelf declaratief vast in JSON. De oefening bouwt voort op de [Microsoft-instructie voor een Windows-VM met een ARM-template](https://learn.microsoft.com/azure/virtual-machines/windows/ps-template).
+Azure CLI maakte in P2 meerdere resources voor je op basis van één hoog-niveaucommando. In deze fase leg je de gewenste resources en afhankelijkheden zelf declaratief vast in JSON.
 
 ### P3.1 Schakel Cloud Shell Over Naar PowerShell
 
@@ -282,13 +282,20 @@ New-AzResourceGroup `
   -Name $ArmResourceGroup `
   -Location $ArmLocation
 
-Test-AzResourceGroupDeployment `
+$validationErrors = Test-AzResourceGroupDeployment `
   -ResourceGroupName $ArmResourceGroup `
   -TemplateFile './learning-path/arm-vm/main.json' `
-  -adminPassword $ArmAdminPassword
+  -adminPassword $ArmAdminPassword `
+  -ErrorAction Stop
+
+if ($null -eq $validationErrors) {
+  Write-Host 'Validatie geslaagd: de ARM-template kan worden gedeployed.'
+} else {
+  $validationErrors
+}
 ```
 
-`Test-AzResourceGroupDeployment` controleert de template en parameters zonder resources te maken.
+`Test-AzResourceGroupDeployment` controleert de template en parameters zonder resources te maken. Het commando geeft bij een geslaagde validatie vaak geen duidelijke succesmelding terug. Daarom vang je de uitkomst hierboven op in `$validationErrors` en toon je zelf een herkenbare melding wanneer er geen fouten zijn gevonden.
 
 ### P3.4 Deploy De ARM-template
 
