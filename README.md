@@ -24,7 +24,7 @@ Iedere fase lost bewust een probleem van de vorige fase op. Bicep verschijnt daa
 
 De letter **P** staat voor *voortraject*. Gebruik bij vragen steeds de volledige stapcode, bijvoorbeeld: “Ik ben bij P3.4”. Vanaf de einddemo gebruik je de bestaande codes A1, B1.3, B5.6 enzovoort. De oefeningen wisselen tussen Windows- en Linux-VM's omdat ze verschillende officiële quickstarts combineren; het leerdoel is het verschil tussen de deploymentmethoden, niet het verschil tussen de besturingssystemen.
 
-> **Let op: deze leerlijn veroorzaakt werkelijke Azure-kosten.** Verwijder de oefen-resourcegroep aan het einde van iedere P-fase. De einddemo bevat betaalde `P1v3` App Service Plans. Virsoft ruimt de cursus-subscription na maximaal zes uur automatisch op, maar wacht daar tijdens het oefenen niet onnodig op.
+> **Let op: deze leerlijn veroorzaakt werkelijke Azure-kosten.** In P1 tot en met P4 laat je de vier oefen-resourcegroepen tijdelijk staan zodat je ze naast elkaar kunt vergelijken. Verwijder ze daarna in de gezamenlijke cleanup aan het einde van P4. De einddemo bevat betaalde `P1v3` App Service Plans. Virsoft ruimt de cursus-subscription na maximaal zes uur automatisch op, maar wacht daar tijdens het oefenen niet onnodig op.
 
 <a id="fase-p0"></a>
 
@@ -103,14 +103,11 @@ Install-WindowsFeature -Name Web-Server -IncludeManagementTools
 
 Sluit daarna de RDP-sessie. Open het public IP-adres van de VM in een browser en controleer of de IIS-welkomstpagina verschijnt.
 
-### P1.4 Verwijder De Portal-resources
+### P1.4 Laat De Portal-resourcegroep Tijdelijk Staan
 
-1. Open `rg-leerlijn-portal-we-001`.
-2. Kies **Delete resource group**.
-3. Volg de bevestigingsstappen in de portal.
-4. Wacht totdat de resourcegroep niet meer bestaat.
+Verwijder `rg-leerlijn-portal-we-001` nu nog niet.
 
-Je verwijdert bewust de volledige resourcegroep. Daarmee verdwijnen ook alle ondersteunende resources die de portal voor de VM heeft aangemaakt.
+Aan het einde van P4 vergelijk je de resourcegroepen uit P1, P2, P3 en P4 naast elkaar in de Azure Portal. Laat deze portal-resourcegroep daarom bewust staan totdat je bij de gezamenlijke cleanup bent.
 
 <a id="fase-p2"></a>
 
@@ -203,17 +200,11 @@ ssh -o StrictHostKeyChecking=no "$CLI_USERNAME@$CLI_PUBLIC_IP"
 
 Gebruik `exit` om de SSH-sessie weer te verlaten.
 
-### P2.6 Verwijder De CLI-resources
+### P2.6 Laat De CLI-resourcegroep Tijdelijk Staan
 
-```bash
-az group delete \
-  --name "$CLI_RESOURCE_GROUP" \
-  --yes
+Verwijder `rg-leerlijn-cli-we-001` nu nog niet.
 
-az group exists --name "$CLI_RESOURCE_GROUP"
-```
-
-De verwachte laatste uitvoer is `false`. Voer het controlecommando na enkele minuten opnieuw uit wanneer de verwijdering nog loopt.
+Aan het einde van P4 vergelijk je deze CLI-resourcegroep met de portal-resourcegroep, de ARM-template-resourcegroep en de Bicep-resourcegroep. Zo zie je dat de methode anders is, terwijl Azure vergelijkbare bouwblokken aanmaakt.
 
 ### P2.7 Clone Deze Repository
 
@@ -328,27 +319,14 @@ Get-AzResource `
 
 Open daarnaast in de Azure Portal de resourcegroep `rg-leerlijn-arm-we-001`, bekijk de resources en controleer onder **Deployments** dat `arm-vm` is geslaagd.
 
-### P3.6 Verwijder De ARM-resources En Keer Terug Naar Bash
+### P3.6 Laat De ARM-resourcegroep Tijdelijk Staan En Keer Terug Naar Bash
 
-```powershell
-$deleteJob = Remove-AzResourceGroup `
-  -Name $ArmResourceGroup `
-  -Force `
-  -AsJob
+Verwijder `rg-leerlijn-arm-we-001` nu nog niet.
 
-while ((Get-Job -Id $deleteJob.Id).State -in @('NotStarted', 'Running')) {
-  Write-Host "[$(Get-Date -Format 'HH:mm:ss')] Resourcegroep wordt verwijderd..."
-  Start-Sleep -Seconds 10
-}
+Aan het einde van P4 vergelijk je deze ARM-template-resourcegroep met de resourcegroepen uit P1, P2 en P4. Daarna verwijder je alles in één gezamenlijke cleanup.
 
-Receive-Job -Id $deleteJob.Id
-```
-
-Het verwijderen draait op de achtergrond. Zolang Azure bezig is, verschijnt iedere tien seconden een nieuwe statusregel. `Receive-Job` toont daarna het eindresultaat. Ga pas verder wanneer de opdracht is afgerond.
-
-1. Wacht totdat de resourcegroep is verwijderd en het eindresultaat is getoond.
-2. Gebruik **Switch to Bash** in de Cloud Shell-werkbalk.
-3. Ga terug naar de repository:
+1. Gebruik **Switch to Bash** in de Cloud Shell-werkbalk.
+2. Ga terug naar de repository:
 
 ```bash
 cd ~/bicep-demo-asr
@@ -358,7 +336,7 @@ cd ~/bicep-demo-asr
 
 ## P4. Deploy Een Linux-VM Met Bicep
 
-Bicep gebruikt dezelfde Azure Resource Manager-engine als de JSON-template uit P3. Het verschil zit vooral in de schrijfervaring: compacte declaraties, typecontrole, symbolische namen en automatisch afgeleide afhankelijkheden. De oefening is gebaseerd op de [Microsoft-quickstart voor een Linux-VM met Bicep](https://learn.microsoft.com/azure/virtual-machines/linux/quick-create-bicep?tabs=CLI).
+Bicep gebruikt dezelfde Azure Resource Manager-engine als de JSON-template uit P3. Het verschil zit vooral in de schrijfervaring: compacte declaraties, typecontrole, symbolische namen en automatisch afgeleide afhankelijkheden.
 
 ### P4.1 Bekijk De Bicep-template
 
@@ -424,21 +402,54 @@ az resource list \
   --output table
 ```
 
-Open ook de resourcegroep in de Azure Portal. De resourcetypen lijken sterk op P2 en P3, maar de gewenste configuratie staat nu leesbaar en reproduceerbaar in één Bicep-bestand.
+Open ook de resourcegroep in de Azure Portal. Ook deze Bicep-deployment gebruikt dezelfde soort Azure-bouwblokken als de eerdere VM-oefeningen: een virtual machine, network interface, virtual network, network security group, public IP-adres en disk. Het verschil zit vooral in de manier waarop je de infrastructuur beschrijft: de gewenste configuratie staat nu leesbaar en reproduceerbaar in één Bicep-bestand.
 
-### P4.5 Verwijder De Bicep-VM
+### P4.5 Vergelijk De Vier Resourcegroepen In De Portal
+
+Open in de Azure Portal **Resource groups** en bekijk de vier resourcegroepen naast elkaar:
+
+| Fase | Resourcegroep | Deploymentmethode |
+|---|---|---|
+| P1 | `rg-leerlijn-portal-we-001` | Azure Portal |
+| P2 | `rg-leerlijn-cli-we-001` | Azure CLI |
+| P3 | `rg-leerlijn-arm-we-001` | PowerShell met ARM JSON-template |
+| P4 | `rg-leerlijn-bicep-we-001` | Azure CLI met Bicep |
+
+Let op het patroon: iedere methode maakt uiteindelijk een VM met ondersteunende resources zoals netwerk, public IP, netwerkinterface, NSG en disk. Het verschil zit vooral in de manier waarop je Azure vertelt wat je wilt:
+
+- in P1 klik je de keuzes bij elkaar in de portal;
+- in P2 geef je imperatieve CLI-opdrachten;
+- in P3 beschrijf je de gewenste eindtoestand in een kale ARM JSON-template;
+- in P4 beschrijf je dezelfde soort gewenste eindtoestand compacter en leesbaarder met Bicep.
+
+Dit is het belangrijkste leermoment van het voortraject: de Azure-resources lijken op elkaar, maar de manier van werken wordt steeds beter herhaalbaar, controleerbaar en onderhoudbaar.
+
+### P4.6 Verwijder De Vier Voortraject-resourcegroepen
 
 ```bash
-az group delete \
-  --name "$BICEP_RESOURCE_GROUP" \
-  --yes
+for rg in \
+  rg-leerlijn-portal-we-001 \
+  rg-leerlijn-cli-we-001 \
+  rg-leerlijn-arm-we-001 \
+  rg-leerlijn-bicep-we-001
+do
+  echo "Verwijderen gestart voor $rg"
+  az group delete --name "$rg" --yes --no-wait
+done
 
-az group exists --name "$BICEP_RESOURCE_GROUP"
+for rg in \
+  rg-leerlijn-portal-we-001 \
+  rg-leerlijn-cli-we-001 \
+  rg-leerlijn-arm-we-001 \
+  rg-leerlijn-bicep-we-001
+do
+  echo "$rg: $(az group exists --name "$rg")"
+done
 ```
 
-Wacht totdat de laatste uitvoer `false` is.
+De eerste lus start de verwijdering van alle vier de resourcegroepen. Door `--no-wait` krijg je de prompt snel terug. De tweede lus controleert of een resourcegroep nog bestaat. Zie je nog `true`, dan is Azure nog bezig met verwijderen. Herhaal de tweede lus na enkele minuten totdat alle regels `false` tonen.
 
-### P4.6 Maak De Balans Op
+### P4.7 Maak De Balans Op
 
 | Onderwerp | Portal | Azure CLI | ARM JSON | Bicep |
 |---|---|---|---|---|
