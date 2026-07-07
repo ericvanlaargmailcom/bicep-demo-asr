@@ -56,7 +56,7 @@ Gebruik in alle volgende fasen uitsluitend deze cursus-subscription.
 
 ## P1. Deploy Een Windows-VM Via De Azure Portal
 
-In deze eerste fase werk je volledig visueel. Je ziet welke keuzes nodig zijn om een VM te maken en welke ondersteunende resources Azure daarbij aanmaakt. De oefening is gebaseerd op de [Microsoft-quickstart voor een Windows-VM in de Azure Portal](https://learn.microsoft.com/azure/virtual-machines/windows/quick-create-portal).
+In deze eerste fase werk je volledig visueel. Je ziet welke keuzes nodig zijn om een VM te maken en welke ondersteunende resources Azure daarbij aanmaakt.
 
 ### P1.1 Maak De Virtuele Machine
 
