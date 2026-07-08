@@ -8,7 +8,7 @@ Je hebt voor de volledige leerlijn alleen deze README, een moderne browser en to
 
 | Fase | Werkwijze of onderwerp | Waarom dit nodig is | Directe URL |
 |---|---|---|---|
-| **P0** | Eenmalige voorbereiding | Aanmelden, MFA activeren en de cursus-subscription controleren. | [Open P0](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p0) |
+| **P0** | Voorbereiding | Aanmelden, MFA activeren en de cursus-subscription controleren. | [Open P0](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p0) |
 | **P1** | Azure Portal | Resources en afhankelijkheden visueel herkennen. Handmatige stappen zijn lastig exact te herhalen. | [Open P1](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p1) |
 | **P2** | Azure CLI | Azure imperatief en scriptbaar aansturen. Je beschrijft nog losse acties in plaats van één gewenste eindtoestand. | [Open P2](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p2) |
 | **P3** | ARM JSON-template | Infrastructuur declaratief en herhaalbaar vastleggen. Kale JSON blijkt uitgebreid en lastig leesbaar. | [Open P3](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p3) |
@@ -28,7 +28,7 @@ De letter **P** staat voor *voortraject*. Gebruik bij vragen steeds de volledige
 
 <a id="fase-p0"></a>
 
-## P0. Eenmalige Voorbereiding
+## P0. Voorbereiding
 
 ### P0.1 Meld Je Aan En Activeer MFA
 
