@@ -13,7 +13,7 @@ param environment string
 @maxLength(5)
 param applicationName string
 
-@description('Azure region for all resources in this demo.')
+@description('Azure region for all resources in this lab.')
 @allowed([
   'westeurope'
 ])
@@ -110,7 +110,7 @@ module webApp 'modules/webapp/webApp.bicep' = {
   }
 }
 
-// Demo-friendly: role assignment is enabled only when a real principalId is supplied.
+// Lab-friendly: role assignment is enabled only when a real principalId is supplied.
 module security 'modules/security/roleAssignments.bicep' = if (!empty(principalId)) {
   name: 'security-rbac-${environment}'
   scope: appResourceGroup

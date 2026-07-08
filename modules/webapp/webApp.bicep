@@ -65,7 +65,7 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
           value: '~3'
         }
         {
-          name: 'ASR_DEMO_MANAGED_BY'
+          name: 'ASR_LAB_MANAGED_BY'
           value: 'bicep'
         }
       ]
@@ -105,11 +105,11 @@ resource stagingSlot 'Microsoft.Web/sites/slots@2023-12-01' = if (deployStagingS
           value: '~3'
         }
         {
-          name: 'ASR_DEMO_MANAGED_BY'
+          name: 'ASR_LAB_MANAGED_BY'
           value: 'bicep'
         }
         {
-          name: 'ASR_DEMO_SLOT'
+          name: 'ASR_LAB_SLOT'
           value: 'staging'
         }
       ]

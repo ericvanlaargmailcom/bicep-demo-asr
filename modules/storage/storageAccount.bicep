@@ -41,7 +41,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   }
 }
 
-// Azure Files is available on StorageV2 accounts; this configures the file service explicitly for the demo.
+// Azure Files is available on StorageV2 accounts; this configures the file service explicitly for the lab.
 resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2023-05-01' = {
   parent: storage
   name: 'default'

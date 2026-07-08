@@ -1,6 +1,6 @@
 # Azure Deployment Leerlijn: Van Portal Naar Herbruikbare Bicep-modules
 
-In deze leerlijn bouw je Azure-infrastructuur vijf keer op een steeds beter automatiseerbare manier. Je begint visueel in de Azure Portal, voert daarna dezelfde soort handelingen uit met Azure CLI, stapt vervolgens over op een declaratieve ARM-template en herschrijft dat concept in Bicep. Tot slot gebruik je de volledige demo uit deze repository om herbruikbare modules, What-If, drift, Deployment Stacks en RBAC als code te onderzoeken.
+In deze leerlijn bouw je Azure-infrastructuur vijf keer op een steeds beter automatiseerbare manier. Je begint visueel in de Azure Portal, voert daarna dezelfde soort handelingen uit met Azure CLI, stapt vervolgens over op een declaratieve ARM-template en herschrijft dat concept in Bicep. Tot slot gebruik je het volledige lab uit deze repository om herbruikbare modules, What-If, drift, Deployment Stacks en RBAC als code te onderzoeken.
 
 Je hebt voor de volledige leerlijn alleen deze README, een moderne browser en toegang tot de cursus-subscription nodig. Installeer lokaal geen Visual Studio Code, Git, Bicep, Azure CLI of Azure PowerShell. Vanaf **P2** gebruik je de vooraf geïnstalleerde hulpmiddelen in Azure Cloud Shell.
 
@@ -8,17 +8,17 @@ Je hebt voor de volledige leerlijn alleen deze README, een moderne browser en to
 
 | Fase | Werkwijze of onderwerp | Waarom dit nodig is | Directe URL |
 |---|---|---|---|
-| **P0** | Voorbereiding | Aanmelden, MFA activeren en de cursus-subscription controleren. | [Open P0](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p0) |
-| **P1** | Azure Portal | Resources en afhankelijkheden visueel herkennen. Handmatige stappen zijn lastig exact te herhalen. | [Open P1](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p1) |
-| **P2** | Azure CLI | Azure imperatief en scriptbaar aansturen. Je beschrijft nog losse acties in plaats van één gewenste eindtoestand. | [Open P2](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p2) |
-| **P3** | ARM JSON-template | Infrastructuur declaratief en herhaalbaar vastleggen. Kale JSON blijkt uitgebreid en lastig leesbaar. | [Open P3](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p3) |
-| **P4** | Bicep-template | Dezelfde ARM-engine met compacte syntax en typecontrole gebruiken. Eén groot bestand is nog niet automatisch een organisatiebrede standaard. | [Open P4](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-p4) |
-| **Eindoefening** | Herbruikbare Bicep-modules | De architectuur, parameters en folderstructuur van de complete oplossing leren kennen. | [Open de eindoefening](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-eindoefening) |
-| **A** | Eindoefening voorbereiden | Cloud Shell, repository en editor gereedmaken. | [Open A](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-a) |
-| **B** | Deployments en oefeningen | Je leert de Bicep-oplossing echt gebruiken: deployen naar dev/test/prod, parameters aanpassen, What-If lezen, drift herkennen, handmatige wijzigingen herstellen en Deployment Stacks gebruiken voor lifecyclebeheer. Ook zie je hoe RBAC als code in het model past. | [Open B](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-b) |
-| **C** | Architectuur en kernboodschap | Je leert de technische oefeningen terugvertalen naar architectuurtaal: welke verantwoordelijkheden liggen bij het platform, wat blijft applicatiespecifiek en waarom standaardmodules helpen om sneller én veiliger te werken. | [Open C](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-c) |
-| **D** | Cleanup | Alle cursusresources gecontroleerd verwijderen. | [Open D](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-d) |
-| **E** | Optionele verdieping | Je leert Deployment Stacks verder duiden: wat `deleteAll`, `deleteResources` en `detachAll` betekenen, hoe deny settings wijzigingen kunnen blokkeren en welke foutmeldingen of situaties je later kunt tegenkomen. Dit deel is vooral naslag na de praktische oefeningen. | [Open E](https://github.com/ericvanlaargmailcom/bicep-demo-asr/blob/main/README.md#fase-e) |
+| **P0** | Voorbereiding | Aanmelden, MFA activeren en de cursus-subscription controleren. | [Open P0](https://github.com/ericvanlaargmailcom/bicep-lab-asr/blob/main/README.md#fase-p0) |
+| **P1** | Azure Portal | Resources en afhankelijkheden visueel herkennen. Handmatige stappen zijn lastig exact te herhalen. | [Open P1](https://github.com/ericvanlaargmailcom/bicep-lab-asr/blob/main/README.md#fase-p1) |
+| **P2** | Azure CLI | Azure imperatief en scriptbaar aansturen. Je beschrijft nog losse acties in plaats van één gewenste eindtoestand. | [Open P2](https://github.com/ericvanlaargmailcom/bicep-lab-asr/blob/main/README.md#fase-p2) |
+| **P3** | ARM JSON-template | Infrastructuur declaratief en herhaalbaar vastleggen. Kale JSON blijkt uitgebreid en lastig leesbaar. | [Open P3](https://github.com/ericvanlaargmailcom/bicep-lab-asr/blob/main/README.md#fase-p3) |
+| **P4** | Bicep-template | Dezelfde ARM-engine met compacte syntax en typecontrole gebruiken. Eén groot bestand is nog niet automatisch een organisatiebrede standaard. | [Open P4](https://github.com/ericvanlaargmailcom/bicep-lab-asr/blob/main/README.md#fase-p4) |
+| **Eindoefening** | Herbruikbare Bicep-modules | De architectuur, parameters en folderstructuur van de complete oplossing leren kennen. | [Open de eindoefening](https://github.com/ericvanlaargmailcom/bicep-lab-asr/blob/main/README.md#fase-eindoefening) |
+| **A** | Eindoefening voorbereiden | Cloud Shell, repository en editor gereedmaken. | [Open A](https://github.com/ericvanlaargmailcom/bicep-lab-asr/blob/main/README.md#fase-a) |
+| **B** | Deployments en oefeningen | Je leert de Bicep-oplossing echt gebruiken: deployen naar dev/test/prod, parameters aanpassen, What-If lezen, drift herkennen, handmatige wijzigingen herstellen en Deployment Stacks gebruiken voor lifecyclebeheer. Ook zie je hoe RBAC als code in het model past. | [Open B](https://github.com/ericvanlaargmailcom/bicep-lab-asr/blob/main/README.md#fase-b) |
+| **C** | Architectuur en kernboodschap | Je leert de technische oefeningen terugvertalen naar architectuurtaal: welke verantwoordelijkheden liggen bij het platform, wat blijft applicatiespecifiek en waarom standaardmodules helpen om sneller én veiliger te werken. | [Open C](https://github.com/ericvanlaargmailcom/bicep-lab-asr/blob/main/README.md#fase-c) |
+| **D** | Cleanup | Alle cursusresources gecontroleerd verwijderen. | [Open D](https://github.com/ericvanlaargmailcom/bicep-lab-asr/blob/main/README.md#fase-d) |
+| **E** | Optionele verdieping | Je leert Deployment Stacks verder duiden: wat `deleteAll`, `deleteResources` en `detachAll` betekenen, hoe deny settings wijzigingen kunnen blokkeren en welke foutmeldingen of situaties je later kunt tegenkomen. Dit deel is vooral naslag na de praktische oefeningen. | [Open E](https://github.com/ericvanlaargmailcom/bicep-lab-asr/blob/main/README.md#fase-e) |
 
 Iedere fase lost bewust een probleem van de vorige fase op. Bicep verschijnt daardoor niet als zomaar een nieuwe taal, maar als een logisch vervolg op ervaringen die je eerder in de leerlijn hebt opgedaan.
 
@@ -227,13 +227,13 @@ Uitvoeren in **Bash**:
 ```bash
 cd ~
 
-if [ -d bicep-demo-asr/.git ]; then
-  git -C bicep-demo-asr pull --ff-only
+if [ -d bicep-lab-asr/.git ]; then
+  git -C bicep-lab-asr pull --ff-only
 else
-  git clone https://github.com/ericvanlaargmailcom/bicep-demo-asr.git
+  git clone https://github.com/ericvanlaargmailcom/bicep-lab-asr.git
 fi
 
-cd bicep-demo-asr
+cd bicep-lab-asr
 ```
 
 Voor het klonen is geen GitHub-account nodig. Omdat Cloud Shell tijdelijk is, moet je na een beëindigde sessie de repository opnieuw clonen.
@@ -253,7 +253,7 @@ Azure CLI maakte in P2 meerdere resources voor je op basis van één hoog-niveau
 Uitvoeren in **PowerShell**:
 
 ```powershell
-Set-Location ~/bicep-demo-asr
+Set-Location ~/bicep-lab-asr
 Get-AzContext
 ```
 
@@ -357,7 +357,7 @@ Aan het einde van P4 vergelijk je deze ARM-template-resourcegroep met de resourc
 Uitvoeren in **Bash**:
 
 ```bash
-cd ~/bicep-demo-asr
+cd ~/bicep-lab-asr
 ```
 
 <a id="fase-p4"></a>
@@ -513,13 +513,13 @@ Je hebt nu de basis van Bicep ervaren. In de eindoefening ga je van één Bicep-
 
 ## Eindoefening: Secure Azure Landing Zone Met Herbruikbare Bicep-modules
 
-Deze repository bevat een compacte ASR-demo over herbruikbare Azure Bicep-modules. De demo laat zien hoe je met een klein aantal gestandaardiseerde modules snel een veilige applicatieomgeving uitrolt met consistente naming, tags, monitoring en private connectivity.
+Deze repository bevat een compact ASR-lab over herbruikbare Azure Bicep-modules. Het lab laat zien hoe je met een klein aantal gestandaardiseerde modules snel een veilige applicatieomgeving uitrolt met consistente naming, tags, monitoring en private connectivity.
 
 De insteek is bewust compact: geen enterprise landing zone met tientallen lagen, maar een realistische mini-landing-zone waarin de principes duidelijk zichtbaar blijven.
 
 ### Doel Van De Eindoefening
 
-In deze demo ontdek je hoe een financiële organisatie security-by-default en herhaalbaarheid kan combineren:
+In dit lab ontdek je hoe een financiële organisatie security-by-default en herhaalbaarheid kan combineren:
 
 - Eén `main.bicep` op subscription scope maakt de resource group en orkestreert de modules.
 - Herbruikbare modules leveren netwerk, storage, Web App runtime, monitoring en optionele RBAC.
@@ -529,7 +529,7 @@ In deze demo ontdek je hoe een financiële organisatie security-by-default en he
 
 ### Architectuur Van De Eindoefening
 
-De demo rolt per omgeving een applicatie-resource-group uit:
+Het lab rolt per omgeving een applicatie-resource-group uit:
 
 - Resource group: `rg-asr-{applicationName}-{environment}-we-001`
 - Virtual network: `vnet-asr-{applicationName}-{environment}-we-001`
@@ -565,7 +565,7 @@ De demo rolt per omgeving een applicatie-resource-group uit:
 ### Folderstructuur
 
 ```text
-bicep-demo-asr/
+bicep-lab-asr/
 ├─ README.md
 ├─ main.bicep
 ├─ main.parameters.dev.bicepparam
@@ -604,7 +604,7 @@ De hoofdtemplate gebruikt deze parameters:
 - `roleDefinitionId`: optioneel aanpasbare role definition, standaard `Reader`
 - `deployStagingSlot`: bepaalt of het staging slot wordt uitgerold, standaard `true`
 
-De parameterbestanden gebruiken het Bicep-native `.bicepparam` formaat met dummywaarden. Hoewel Azure de technische parameternaam `principalId` gebruikt, verwacht deze demo specifiek het object-ID van een **Entra ID-groep** en niet van een service principal, gebruiker of managed identity.
+De parameterbestanden gebruiken het Bicep-native `.bicepparam` formaat met dummywaarden. Hoewel Azure de technische parameternaam `principalId` gebruikt, verwacht dit lab specifiek het object-ID van een **Entra ID-groep** en niet van een service principal, gebruiker of managed identity.
 
 Web App- en Storage Account-namen moeten wereldwijd uniek zijn. De template voegt daarom automatisch een deterministische `uniqueString` op basis van de subscription-ID toe. Cursisten hoeven hiervoor geen eigen naam te bedenken.
 
@@ -612,7 +612,7 @@ Web App- en Storage Account-namen moeten wereldwijd uniek zijn. De template voeg
 
 ## A. Bereid De Eindoefening Voor
 
-Voer de eindoefening uit in **Bash** vanuit de map `bicep-demo-asr`. Wanneer je P2 tot en met P4 in dezelfde Cloud Shell-sessie hebt uitgevoerd, staan de repository en hulpmiddelen al klaar.
+Voer de eindoefening uit in **Bash** vanuit de map `bicep-lab-asr`. Wanneer je P2 tot en met P4 in dezelfde Cloud Shell-sessie hebt uitgevoerd, staan de repository en hulpmiddelen al klaar.
 
 ### A1. Controleer Of Herstel De Cloud Shell-sessie
 
@@ -632,13 +632,13 @@ Cloud Shell is al aangemeld met de portalsessie. Voer daarom geen afzonderlijk `
 ```bash
 cd ~
 
-if [ -d bicep-demo-asr/.git ]; then
-  git -C bicep-demo-asr pull --ff-only
+if [ -d bicep-lab-asr/.git ]; then
+  git -C bicep-lab-asr pull --ff-only
 else
-  git clone https://github.com/ericvanlaargmailcom/bicep-demo-asr.git
+  git clone https://github.com/ericvanlaargmailcom/bicep-lab-asr.git
 fi
 
-cd bicep-demo-asr
+cd bicep-lab-asr
 ```
 
 Voor het klonen is geen GitHub-account nodig. De bestanden bestaan alleen zolang de tijdelijke Cloud Shell-sessie bestaat.
@@ -655,20 +655,20 @@ De Cloud Shell-editor bevat een bestandsverkenner en syntax highlighting. Gebrui
 
 ## B. Deployment Commands In Azure Cloud Shell
 
-Voer alle commando's in dit hoofdstuk uit in **Bash** vanuit de Cloud Shell-map `bicep-demo-asr`. Houd Cloud Shell tijdens de oefeningen geopend. Na een beëindigde tijdelijke sessie moet je de repository opnieuw clonen en variabelen zoals `RESOURCE_GROUP_NAME`, `WEB_APP_NAME`, `STACK_NAME` en `GROUP_ID` opnieuw instellen bij de stap waar je verdergaat.
+Voer alle commando's in dit hoofdstuk uit in **Bash** vanuit de Cloud Shell-map `bicep-lab-asr`. Houd Cloud Shell tijdens de oefeningen geopend. Na een beëindigde tijdelijke sessie moet je de repository opnieuw clonen en variabelen zoals `RESOURCE_GROUP_NAME`, `WEB_APP_NAME`, `STACK_NAME` en `GROUP_ID` opnieuw instellen bij de stap waar je verdergaat.
 
 ### B1. Valideer En Deploy De Omgeving
 
 #### B1.1 Controleer De Cloud Shell-context
 
-Controleer vanuit de map `bicep-demo-asr` welke tenant en subscription actief zijn:
+Controleer vanuit de map `bicep-lab-asr` welke tenant en subscription actief zijn:
 
 ```bash
 pwd
 az account show --output table
 ```
 
-Ga pas verder wanneer `pwd` eindigt op `/bicep-demo-asr` en `az account show` de juiste tenant en subscription toont.
+Ga pas verder wanneer `pwd` eindigt op `/bicep-lab-asr` en `az account show` de juiste tenant en subscription toont.
 
 #### B1.2 Valideer De Bicep-template
 
@@ -761,7 +761,7 @@ az deployment sub create \
   --parameters main.parameters.prod.bicepparam
 ```
 
-Virsoft ruimt de volledige cursus-subscription na maximaal zes uur automatisch op. De vervolgoefeningen gebruiken alleen de dev-omgeving; test en prod blijven als demonstratie van de herhaalbare standaard bestaan totdat de automatische cleanup plaatsvindt of je later zelf `./scripts/cleanup.sh` uitvoert.
+Virsoft ruimt de volledige cursus-subscription na maximaal zes uur automatisch op. De vervolgoefeningen gebruiken alleen de dev-omgeving; test en prod blijven als voorbeeld van de herhaalbare standaard bestaan totdat de automatische cleanup plaatsvindt of je later zelf `./scripts/cleanup.sh` uitvoert.
 
 ### B2. Ervaar Infrastructuurdrift Met What-If
 
@@ -1155,18 +1155,18 @@ az group exists --name "$RESOURCE_GROUP_NAME"
 
 De tweede opdracht hoort `false` terug te geven.
 
-### B9. Demonstreer RBAC Als Code
+### B9. Laat RBAC Als Code Zien
 
 #### B9.1 Begrijp De Opzet
 
-De securitymodule maakt optioneel een Azure RBAC-role-assignment aan op de resource group. De module maakt de Entra ID-groep zelf niet aan. Je maakt daarom eerst een tijdelijke demogroep aan. In deze demo is `principalType` vastgezet op `Group`; een service principal, gebruiker of managed identity werkt hier dus niet.
+De securitymodule maakt optioneel een Azure RBAC-role-assignment aan op de resource group. De module maakt de Entra ID-groep zelf niet aan. Je maakt daarom eerst een tijdelijke labgroep aan. In dit lab is `principalType` vastgezet op `Group`; een service principal, gebruiker of managed identity werkt hier dus niet.
 
 #### B9.2 Maak Een Tijdelijke Entra-groep
 
 Maak de tijdelijke groep aan en bewaar het object-ID:
 
 ```bash
-GROUP_NAME="bicep-rbac-demo"
+GROUP_NAME="bicep-rbac-lab"
 GROUP_ID=$(az ad group create \
   --display-name "$GROUP_NAME" \
   --mail-nickname "$GROUP_NAME" \
@@ -1176,7 +1176,7 @@ GROUP_ID=$(az ad group create \
 printf 'Entra group object ID: %s\n' "$GROUP_ID"
 ```
 
-Hiervoor moet je cursusaccount groepen mogen aanmaken in Entra ID. Als dat niet is toegestaan, vraag je docent dan om een vooraf aangemaakte demogroep. Je kunt het object-ID daarvan opzoeken met `az ad group show`.
+Hiervoor moet je cursusaccount groepen mogen aanmaken in Entra ID. Als dat niet is toegestaan, vraag je docent dan om een vooraf aangemaakte labgroep. Je kunt het object-ID daarvan opzoeken met `az ad group show`.
 
 #### B9.3 Deploy De Role-assignment
 
@@ -1193,7 +1193,7 @@ az deployment sub create \
 
 #### B9.4 Controleer De Role-assignment
 
-De standaardrol is `Reader`. De groep mag daardoor resources in de demo-resourcegroep bekijken, maar niet wijzigen of verwijderen. Controleer de aangemaakte assignment met Azure CLI:
+De standaardrol is `Reader`. De groep mag daardoor resources in de lab-resourcegroep bekijken, maar niet wijzigen of verwijderen. Controleer de aangemaakte assignment met Azure CLI:
 
 ```bash
 SUBSCRIPTION_ID=$(az account show --query id --output tsv)
@@ -1210,7 +1210,7 @@ Controleer ook in de Azure Portal bij **Resource group > Access control (IAM) > 
 
 #### B9.5 Leg De Bicep-principes Uit
 
-Wat deze demo over Bicep laat zien:
+Wat dit lab over Bicep laat zien:
 
 - **RBAC is declaratieve infrastructuur:** toegangsrechten staan naast de resources in broncode en zijn daardoor reviewbaar en herhaalbaar.
 - **Least privilege:** de standaardrol is bewust `Reader` en de scope is beperkt tot één resource group.
@@ -1222,9 +1222,9 @@ Meld je eventueel in een privébrowser aan als een testgebruiker uit de groep. C
 
 De uitvoerder van de Bicep-deployment moet zelf rechten hebben om role-assignments te maken, bijvoorbeeld **Owner** of **User Access Administrator** op de betreffende scope.
 
-#### B9.6 Verwijder De Demo-assignment En Groep
+#### B9.6 Verwijder De Lab-assignment En Groep
 
-> Alleen opnieuw deployen zonder `principalId` verwijdert een bestaande assignment niet bij een incrementele deployment. Verwijder de demo-assignment daarom expliciet:
+> Alleen opnieuw deployen zonder `principalId` verwijdert een bestaande assignment niet bij een incrementele deployment. Verwijder de lab-assignment daarom expliciet:
 
 ```bash
 az role assignment delete \
@@ -1261,7 +1261,7 @@ Je hebt nu gezien dat `main.bicep` de infrastructuur niet volledig zelf beschrij
 
 Dit sluit aan bij het doel van een Azure Solution Review. Een review gaat niet alleen over de vraag of een losse resource technisch werkt, maar ook over de vraag of de volledige oplossing voldoet aan de afgesproken architectuurprincipes. Denk aan veilige netwerktoegang, centrale logging, consistente tags, herkenbare resourcenamen en het uitschakelen van onnodige publieke toegang. Door deze keuzes in herbruikbare modules vast te leggen, worden reviewafspraken onderdeel van de uitvoerbare infrastructuurcode.
 
-Een applicatieteam hoeft die keuzes vervolgens niet voor iedere omgeving of applicatie opnieuw te maken. Het team gebruikt de goedgekeurde modules en levert alleen de waarden aan die werkelijk per workload of omgeving verschillen. In deze demo zijn dat bijvoorbeeld de omgevingsnaam, applicatienaam, eigenaar en kostenplaats. Daardoor ontstaat in dev, test en prod dezelfde veilige en herkenbare basis, terwijl bewuste configuratieverschillen expliciet in de parameterbestanden blijven staan.
+Een applicatieteam hoeft die keuzes vervolgens niet voor iedere omgeving of applicatie opnieuw te maken. Het team gebruikt de goedgekeurde modules en levert alleen de waarden aan die werkelijk per workload of omgeving verschillen. In dit lab zijn dat bijvoorbeeld de omgevingsnaam, applicatienaam, eigenaar en kostenplaats. Daardoor ontstaat in dev, test en prod dezelfde veilige en herkenbare basis, terwijl bewuste configuratieverschillen expliciet in de parameterbestanden blijven staan.
 
 Deze scheiding maakt ook de verantwoordelijkheden duidelijker. Het platformteam beheert de kwaliteit van de bouwblokken en bepaalt welke technische standaard daarin wordt afgedwongen. Het applicatieteam combineert die bouwblokken in `main.bicep` en vult de workloadspecifieke parameters in. Een ontwikkelaar hoeft daardoor niet voor iedere deployment opnieuw uit te zoeken hoe diagnostic settings, private endpoints, managed identities of securityinstellingen moeten worden geconfigureerd.
 
@@ -1289,7 +1289,7 @@ Voor een afwijkende `applicationName` geef je de naam als argument mee:
 ./scripts/cleanup.sh "<applicationName>"
 ```
 
-Omdat deze versie geen Key Vault meer gebruikt, is er geen soft-delete of purge-stap nodig. De cleanup blijft daardoor geschikt voor herhaalde cursusdemo's.
+Omdat deze versie geen Key Vault meer gebruikt, is er geen soft-delete of purge-stap nodig. De cleanup blijft daardoor geschikt voor herhaalde cursuslabs.
 
 <a id="fase-e"></a>
 

@@ -100,4 +100,4 @@ if [[ -n "${remaining_stacks}" || -n "${remaining_resource_groups}" ]]; then
   exit 1
 fi
 
-echo "Cleanup completed. No matching learning-path or final-demo resources remain."
+echo "Cleanup completed. No matching learning-path or final-lab resources remain."
